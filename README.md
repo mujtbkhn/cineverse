@@ -1,8 +1,37 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## DOCUMENTATION IS A SUPERPOWER OF A DEVELOPER
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Project setup
+ - CRA
+ - Tailwind
+ - Components 
+ - Header, Login, Body
+ - SignUp/SignIn
+ - Form Validation
+ - useRef Hook
+ - Firebase Setup
+ - Firebase Deployment
+ - Authentication with api's
+ - created redux store
+ - slice
+ - navigation 
+ - user using redux 
+ - Sign Out
+ - auth state changed to check the user 
+ - constant files
+ - custom hook
+ - TMDB database for accesing api's
+ - moviesSlice
+ - updated store with movie data 
+ - trailer video 
+ - mainContainer and SecondaryContainer
+ - videoTitle and videoBackground
+ - movieLists and movieCards
+ - more custom hooks
+ - different categories in movieLists using TMDB
+ - Browse Page
+ - supported languages update
+ - added configSlice to dynamically render selected language
+ - Gpt search page
+ - Gpt search bar
+ - multilingual gptSearch page
