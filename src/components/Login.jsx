@@ -80,12 +80,12 @@ const Login = () => {
             <Header />
 
             <div className='absolute '>
-                <img src={BACKGROUND} alt='background' />
+                <img className="object-cover h-screen md:object-none md:w-screen" src={BACKGROUND} alt='background' />
 
             </div>
 
 
-            <form className='absolute left-0 right-0 flex flex-col w-3/12 mx-auto my-40 text-white bg-black m rounded-2xl bg-opacity-80 p-14' onSubmit={handleSubmit}>
+            <form className='absolute left-0 right-0 flex flex-col mx-auto w-[90%] my-40 text-white bg-black md:w-3/12 m rounded-2xl bg-opacity-80 p-14' onSubmit={handleSubmit}>
                 <h1 className='text-3xl'>{isSignInForm ? "Sign In" : "Sign Up"}</h1>
                 {!isSignInForm && <input ref={name} className='w-full p-4 my-8 text-center text-black rounded-md' type='text' placeholder='Name' />}
                 <input ref={email} className='w-full p-4 my-8 text-center text-black rounded-md' type='text' placeholder='Email-address' />
