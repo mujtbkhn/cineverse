@@ -10,7 +10,6 @@ import { changeLanguage } from "../utils/configSlice";
 
 const Header = () => {
   const user = useSelector((store) => store.user);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -54,7 +53,7 @@ const Header = () => {
   const handleLangChange = (e) => {
     dispatch(changeLanguage(e.target.value));
   };
-  const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
+const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   return (
     <div className="absolute z-10 flex items-center justify-between w-screen px-8 py-2 bg-gradient-to-b from-black">
       <img className="w-44" src={LOGO} alt="logo" />
