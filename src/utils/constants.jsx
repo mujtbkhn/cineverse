@@ -16,3 +16,5 @@ export const OPTIONS = {
 export const IMG_CDN = 'https://image.tmdb.org/t/p/w300';
 
 export const SUPPORTED_LANGUAGES = [{identifier : "en", name : "English"}, {identifier : "hindi", name : "Hindi"}, {identifier : "arabic", name : "Arabic"}]
+
+export const OPENAI_KEY = "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";
