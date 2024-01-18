@@ -61,7 +61,7 @@ const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
       <img className="mx-auto md:mx-0 w-44" src={LOGO} alt="logo" />
 
       {user && (
-        <div className="flex justify-around p-1">
+        <div className="flex items-center justify-around p-1">
           {showGptSearch && (
             <select
             className="p-2 m-2 text-white bg-gray-900"
@@ -76,7 +76,7 @@ const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
           )}
 
           <button
-            className="px-8 py-3 mr-3 text-white bg-purple-600 rounded-md "
+            className="h-0 px-8 mr-3 text-white bg-purple-600 rounded-md md:h-10"
             onClick={handleGPTSearchClick}
           >
             {showGptSearch ? "HomePage" : "GPT-Search"}

@@ -35,3 +35,6 @@
  - Gpt search page
  - Gpt search bar
  - multilingual gptSearch page
+ - Integrated movieCard for the gptResult which shows all the searched movies in movieCard style
+ - added env file transferred all keys to env and configured vite.config.js 
+ - made the website completely responsive 
