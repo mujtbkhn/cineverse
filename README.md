@@ -2,7 +2,7 @@
 ## DOCUMENTATION IS A SUPERPOWER OF A DEVELOPER
 
 # Project setup
- - CRA
+ - VITE
  - Tailwind
  - Components 
  - Header, Login, Body
