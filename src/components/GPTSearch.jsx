@@ -6,7 +6,7 @@ import { BACKGROUND } from "../utils/constants";
 const GPTSearch = () => {
   return (
     <>
-      <div className="fixed -z-10">
+      <div className="fixed no-scrollbar -z-10">
         <img className="object-cover h-screen md:object-none md:w-screen" src={BACKGROUND} alt="background" />
       </div>
       <div>

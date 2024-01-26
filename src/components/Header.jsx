@@ -55,13 +55,13 @@ const Header = () => {
   };
 const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   return (
-    <div className="absolute z-10 items-center w-screen px-8 py-2 md:bg-transparent bg-gradient-to-b from-black">
+    <div className="absolute z-10 w-screen px-8 py-2 md:bg-transparent bg-gradient-to-b from-black">
       <div className="justify-between md:flex">
       
       <img className="mx-auto md:mx-0 w-44" src={LOGO} alt="logo" />
 
       {user && (
-        <div className="flex items-center justify-around p-1">
+        <div className="flex justify-center pt-5 text-center align-middle">
           {showGptSearch && (
             <select
             className="p-2 m-2 text-white bg-gray-900"
@@ -76,7 +76,7 @@ const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
           )}
 
           <button
-            className="h-0 px-8 mr-3 text-white bg-purple-600 rounded-md md:h-10"
+            className="h-10 px-8 mr-3 text-white bg-purple-600 rounded-md"
             onClick={handleGPTSearchClick}
           >
             {showGptSearch ? "HomePage" : "GPT-Search"}

@@ -18,17 +18,19 @@ const Browse = () => {
 
   const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   return (
-    <>
-      <Header />
-      {showGptSearch ? (
-        <GPTSearch />
-      ) : (
-        <>
-          {" "}
-          <MainContainer />
-          <SecondaryContainer />{" "}
-        </>
-      )}
+    <div>
+      <div >
+        <Header />
+        {showGptSearch ? (
+          <GPTSearch />
+        ) : (
+          <>
+            {" "}
+            <MainContainer />
+            <SecondaryContainer />{" "}
+          </>
+        )}
+      </div>
       {/**
        * Main Container
        *  -Video Background
@@ -37,7 +39,7 @@ const Browse = () => {
        *  -MovieLists * n
        *  -Cards * n
        */}
-    </>
+    </div>
   );
 };
 
