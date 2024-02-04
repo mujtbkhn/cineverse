@@ -1,7 +1,7 @@
 
 ## DOCUMENTATION IS A SUPERPOWER OF A DEVELOPER
 
--[Live Link[(https://mujtaba-movie-gpt.netlify.app/)
+-[Live Link](https://mujtaba-movie-gpt.netlify.app/)
 
 ### Project setup
  - VITE
