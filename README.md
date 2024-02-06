@@ -1,7 +1,9 @@
 
 ## DOCUMENTATION IS A SUPERPOWER OF A DEVELOPER
 
-# Project setup
+-[Live Link](https://mujtaba-movie-gpt.netlify.app/)
+
+### Project setup
  - VITE
  - Tailwind
  - Components 
