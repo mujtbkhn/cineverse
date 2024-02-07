@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function AccordionItem({ title, content }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,18 +8,14 @@ function AccordionItem({ title, content }) {
   };
 
   return (
-    <div className="mb-2 border rounded">
-      <div className="flex items-center justify-between p-4 bg-gray-200 cursor-pointer" onClick={toggleAccordion}>
-        <div className="text-lg font-bold">{title}</div>
-        <svg className={`w-6 h-6 ${isOpen ? 'transform rotate-180' : ''}`} fill="currentColor" viewBox="0 0 20 20">
-          <path
-            fillRule="evenodd"
-            d="M6.293 7.293a1 1 0 011.414 0L10 9.586l2.293-2.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414zM10 4a1 1 0 011 1v6a1 1 0 01-2 0V5a1 1 0 011-1z"
-            clipRule="evenodd"
-          />
-        </svg>
+    <div className="mx-auto mb-2 rounded">
+      <div
+        className="flex items-center justify-center p-4 mx-auto bg-gray-200 cursor-pointer md:w-1/4"
+        onClick={toggleAccordion}
+      >
+        <div className="flex justify-center mx-auto mb-2 text-lg font-bold">{title}</div>
       </div>
-      {isOpen && <div className="p-4 bg-white">{content}</div>}
+      {isOpen && <div className="flex justify-center p-4 bg-white">{content}</div>}
     </div>
   );
 }

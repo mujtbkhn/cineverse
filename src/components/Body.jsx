@@ -21,7 +21,7 @@ const Body = () => {
             element: <MovieDetails />
         },
         {
-            path: '/person',
+            path: '/person/:personId',
             element: <Person />
         },
     ])

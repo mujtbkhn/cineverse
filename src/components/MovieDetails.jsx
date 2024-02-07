@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { IMG_CDN, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
 import Accordion from "./Accordion";
@@ -12,7 +12,9 @@ const MovieDetails = () => {
   const [reviews, setReviews] = useState(null);
   const [similar, setSimilar] = useState([]);
   const [cast, setCast] = useState([]);
+  const [personId, setPersonId] = useState(null);
 
+  
   useEffect(() => {
     fetchMovies();
     fetchDetails();
@@ -29,7 +31,7 @@ const MovieDetails = () => {
     );
     const json = await data.json();
     setMovieDetails(json);
-    // console.log(movieId);
+    console.log(json);
   };
 
   const fetchDetails = async () => {
@@ -77,13 +79,16 @@ const MovieDetails = () => {
     // console.log(json.cast);
     setCast(json.cast);
   };
-  const fetchPersonDetails = async () => {
+
+  const fetchPerson = async (personName) => {
+    const encodedPersonName = encodeURIComponent(personName); // Encode the person name
     const data = await fetch(
-      `https://api.themoviedb.org/3/search/${cast.original_name}`,
+      `https://api.themoviedb.org/3/search/person?query=${encodedPersonName}&include_adult=false&language=en-US&page=1`,
       OPTIONS
     );
     const json = await data.json();
-    console.log(json);
+    const id = json.results[0]?.id;
+    setPersonId(id);
   };
 
   const items = [
@@ -100,34 +105,45 @@ const MovieDetails = () => {
   if (!movieDetails) return <div>Loading...</div>;
 
   return (
-    <div className="flex flex-col justify-center ">
-      <div className="flex p-10">
-        <div className="flex justify-center">
+    <div className="flex-col justify-center md:flex ">
+      <div className="p-5 md:p-10 md:flex">
+        <div className="justify-center md:flex">
           <img
             className="object-contain w-screen m-5 h-3/4"
             src={IMG_CDN + movieDetails?.poster_path}
             alt={movieDetails?.title}
           />
         </div>
-        <div>
+        <div className="flex flex-col gap-2 m-4 md:m-10">
           <h1 className="justify-center text-2xl font-bold">
             {movieDetails?.title}
           </h1>
           <h1 className="text-xl italic font-semibold">{details?.tagline}</h1>
 
           <h3>{movieDetails?.overview}</h3>
-          <h2>Release Date: {movieDetails?.release_date}</h2>
+          <h2>
+            Release Date:{" "}
+            <div className="inline font-bold">{movieDetails?.release_date}</div>
+          </h2>
           <h2>Rating: {movieDetails?.vote_average}</h2>
-          <h2>Cast: </h2>
-          <div className="flex flex-wrap justify-center gap-10">
+          <h2 className="p-2 text-3xl ">Cast: </h2>
+          <div className="flex flex-wrap justify-center gap-10 ">
             {cast
               ?.map((cast) => (
-                <div className="flex flex-col flex-wrap">
-                  <Link to={"/person"}>
-                    <img className="w-28 " src={IMG_CDN + cast?.profile_path} />
+                <div className="flex flex-col flex-wrap" key={cast.id}>
+                  <Link to={personId ? `/person/${personId}` : "#"}>
+                    {cast.profile_path ? (
+                      <img
+                        onClick={() => fetchPerson(cast?.original_name)}
+                        className="w-20 md:w-28"
+                        src={IMG_CDN + cast?.profile_path}
+                      />
+                    ) : null}
                   </Link>
-                  <h1 className="font-bold">{cast?.original_name}</h1>
-                  <h2>{cast?.character}</h2>
+                  <h1 className="font-bold">
+                    {cast?.original_name.slice(0, 15) + "..."}
+                  </h1>
+                  <h2>{cast?.character.slice(0, 15) + "..."}</h2>
                 </div>
               ))
               .slice(0, 8)}
@@ -151,10 +167,10 @@ const MovieDetails = () => {
         ))}
       </div>
       <h1 className="p-4 text-3xl font-bold ">Similar Movies:</h1>
-      <div className="flex flex-wrap justify-center gap-10 ">
+      <div className="flex flex-wrap justify-center gap-10 md:flex-row md:justify-center ">
         {similar.map((movie) => (
           <MovieCard
-            className="p-5 m-5"
+            className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
             key={movie.id}
             posterPath={movie?.poster_path}
             id={movie.id}
