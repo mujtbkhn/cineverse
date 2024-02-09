@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { IMG_CDN, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
@@ -13,8 +13,11 @@ const MovieDetails = () => {
   const [similar, setSimilar] = useState([]);
   const [cast, setCast] = useState([]);
   const [personId, setPersonId] = useState(null);
+  const [search, setSearch] = useState([]);
 
-  
+  const searchText = useRef();
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetchMovies();
     fetchDetails();
@@ -23,6 +26,24 @@ const MovieDetails = () => {
     fetchSimilarMovies();
     fetchCast();
   }, [movieId]);
+
+  const handleSearch = () => {
+    const url = `https://api.themoviedb.org/3/search/movie?query=${searchText.current.value}&include_adult=false&language=en-US&page=1`;
+    fetch(url, OPTIONS)
+      .then((res) => res.json())
+      .then((json) => {
+        if (json && json.results && json.results.length > 0) {
+          const movieId = json.results[0]?.id;
+          // Redirect to the MovieDetails page with the correct movieId
+          navigate(`/movieDetails/${movieId}`);
+        } else {
+          console.log("No movie found");
+          // Optionally, you can provide feedback to the user
+        }
+      })
+      .catch((err) => console.error("error:" + err));
+  };
+  
 
   const fetchMovies = async () => {
     const data = await fetch(
@@ -91,6 +112,28 @@ const MovieDetails = () => {
     setPersonId(id);
   };
 
+  const addToWatchList = async () => {
+    const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/watchlist`;
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
+      },
+      body: JSON.stringify({
+        media_type: "movie",
+        media_id: details.id,
+        watchlist: true,
+      }),
+    };
+
+    fetch(url, options)
+      .then((res) => res.json())
+      // .then((json) => console.log(json))
+      .catch((err) => console.error("error:" + err));
+  };
+
   const items = [
     {
       title: "Author : ",
@@ -105,79 +148,107 @@ const MovieDetails = () => {
   if (!movieDetails) return <div>Loading...</div>;
 
   return (
-    <div className="flex-col justify-center md:flex ">
-      <div className="p-5 md:p-10 md:flex">
-        <div className="justify-center md:flex">
-          <img
-            className="object-contain w-screen m-5 h-3/4"
-            src={IMG_CDN + movieDetails?.poster_path}
-            alt={movieDetails?.title}
-          />
-        </div>
-        <div className="flex flex-col gap-2 m-4 md:m-10">
-          <h1 className="justify-center text-2xl font-bold">
-            {movieDetails?.title}
-          </h1>
-          <h1 className="text-xl italic font-semibold">{details?.tagline}</h1>
+    <>
+      <div className="flex justify-center">
+        <input
+          ref={searchText}
+          className="px-5 py-2 m-2 border-2"
+          type="text"
+          placeholder="Enter Movie Name"
+        />
+        <button
+          onClick={() => {
+            handleSearch();
+          }}
+          className="px-5 py-2 m-2 text-white bg-black rounded-md"
+        >
+          Search
+        </button>
+      </div>
+      <div className="flex-col justify-center md:flex ">
+        <div className="p-5 md:p-10 md:flex">
+          <div className="justify-center md:flex">
+            <img
+              className="object-contain w-screen m-5 h-3/4"
+              src={IMG_CDN + movieDetails?.poster_path}
+              alt={movieDetails?.title}
+            />
+          </div>
+          <div className="flex flex-col gap-2 m-4 md:m-10">
+            <h1 className="justify-center text-2xl font-bold">
+              {movieDetails?.title}
+            </h1>
+            <h1 className="text-xl italic font-semibold">{details?.tagline}</h1>
 
-          <h3>{movieDetails?.overview}</h3>
-          <h2>
-            Release Date:{" "}
-            <div className="inline font-bold">{movieDetails?.release_date}</div>
-          </h2>
-          <h2>Rating: {movieDetails?.vote_average}</h2>
-          <h2 className="p-2 text-3xl ">Cast: </h2>
-          <div className="flex flex-wrap justify-center gap-10 ">
-            {cast
-              ?.map((cast) => (
-                <div className="flex flex-col flex-wrap" key={cast.id}>
-                  <Link to={personId ? `/person/${personId}` : "#"}>
-                    {cast.profile_path ? (
-                      <img
-                        onClick={() => fetchPerson(cast?.original_name)}
-                        className="w-20 md:w-28"
-                        src={IMG_CDN + cast?.profile_path}
-                      />
-                    ) : null}
-                  </Link>
-                  <h1 className="font-bold">
-                    {cast?.original_name.slice(0, 15) + "..."}
-                  </h1>
-                  <h2>{cast?.character.slice(0, 15) + "..."}</h2>
-                </div>
-              ))
-              .slice(0, 8)}
+            <h3>{movieDetails?.overview}</h3>
+            <h2>
+              Release Date:{" "}
+              <div className="inline font-bold">
+                {movieDetails?.release_date}
+              </div>
+            </h2>
+            <h2>Rating: {movieDetails?.vote_average}</h2>
+            <h2 className="p-2 text-3xl ">Cast: </h2>
+            <div className="flex flex-wrap justify-center gap-10 ">
+              {cast
+                ?.map((cast) => (
+                  <div className="flex flex-col flex-wrap" key={cast.id}>
+                    <Link to={personId ? `/person/${personId}` : "#"}>
+                      {cast.profile_path ? (
+                        <img
+                          onClick={() => fetchPerson(cast?.original_name)}
+                          className="w-20 md:w-28"
+                          src={IMG_CDN + cast?.profile_path}
+                        />
+                      ) : null}
+                    </Link>
+                    <h1 className="font-bold">
+                      {cast?.original_name.slice(0, 15) + "..."}
+                    </h1>
+                    <h2>{cast?.character.slice(0, 15) + "..."}</h2>
+                  </div>
+                ))
+                .slice(0, 8)}
+            </div>
+            <button
+              onClick={() => {
+                addToWatchList();
+              }}
+              className="flex justify-center w-48 px-8 py-2 m-5 mx-auto font-semibold text-white bg-red-700 rounded-md"
+            >
+              Add to WatchList
+            </button>
           </div>
         </div>
-      </div>
-      <div>
-        <Accordion items={items} />
-      </div>
-      {/* <h2>Vote count: {movieDetails?.vote_count}</h2> */}
-      {/* <h3>Author: {reviews?.results[0]?.author}</h3>
+        <div>
+          <Accordion items={items} />
+        </div>
+        {/* <h2>Vote count: {movieDetails?.vote_count}</h2> */}
+        {/* <h3>Author: {reviews?.results[0]?.author}</h3>
       <h3>Review: {reviews?.results[0]?.content}</h3> */}
-      {/* <img className="object-contain w-48 h-48" src={IMG_CDN + details?.backdrop_path}/> */}
-      {/* <img className="object-contain w-48 h-48" src={IMG_CDN + details?.belongs_to_collection?.backdrop_path} /> */}
-      <div className="flex flex-wrap justify-center gap-10 pb-5">
-        {images.map((image) => (
-          <img
-            className="flex flex-col object-contain w-96"
-            src={IMG_CDN + image?.file_path}
-          />
-        ))}
+        {/* <img className="object-contain w-48 h-48" src={IMG_CDN + details?.backdrop_path}/> */}
+        {/* <img className="object-contain w-48 h-48" src={IMG_CDN + details?.belongs_to_collection?.backdrop_path} /> */}
+        <div className="flex flex-wrap justify-center gap-10 pb-5">
+          {images.map((image) => (
+            <img
+              className="flex flex-col object-contain w-96"
+              src={IMG_CDN + image?.file_path}
+            />
+          ))}
+        </div>
+        <h1 className="p-4 text-3xl font-bold ">Similar Movies:</h1>
+        <div className="flex flex-wrap justify-center gap-10 md:flex-row md:justify-center ">
+          {similar.map((movie) => (
+            <MovieCard
+              className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
+              key={movie.id}
+              posterPath={movie?.poster_path}
+              id={movie.id}
+            />
+          ))}
+        </div>
       </div>
-      <h1 className="p-4 text-3xl font-bold ">Similar Movies:</h1>
-      <div className="flex flex-wrap justify-center gap-10 md:flex-row md:justify-center ">
-        {similar.map((movie) => (
-          <MovieCard
-            className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
-            key={movie.id}
-            posterPath={movie?.poster_path}
-            id={movie.id}
-          />
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
 
