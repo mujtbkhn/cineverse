@@ -2,28 +2,28 @@ import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
 
-const WatchList = () => {
-  const [watchList, setWatchList] = useState([]);
+const Favorite = () => {
+  const [favorite, setFavorite] = useState([]);
   useEffect(() => {
-    fetchWatchList();
+    fetchFavorite();
   }, []);
 
-  const fetchWatchList = async () => {
+  const fetchFavorite = async () => {
     const data = await fetch(
-      `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/watchlist/movies?language=en-US&page=1&sort_by=created_at.asc`,
+      `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/favorite/movies?language=en-US&page=1&sort_by=created_at.asc`,
       OPTIONS
     );
     const json = await data.json();
     // console.log(json.results);
-    setWatchList(json.results);
+    setFavorite(json.results);
   };
-  const removeFromWatchList = (id) =>{
-    const updatedWatchList = watchList.filter(item => item.id !== id)
-    setWatchList(updatedWatchList)
-  }
+  const removeFromFavorite = (id) => {
+    const updatedFavorite = favorite.filter((item) => item.id !== id);
+    setFavorite(updatedFavorite);
+  };
   return (
     <div className="flex flex-wrap justify-center gap-10 p-10">
-      {watchList.map((movie) => (
+      {favorite.map((movie) => (
         <div>
           <h1>{movie?.original_title}</h1>
           <MovieCard
@@ -32,11 +32,11 @@ const WatchList = () => {
             posterPath={movie?.poster_path}
             id={movie.id}
           />
-          <button onClick={() => removeFromWatchList(movie.id)}>watched?</button>
+          <button onClick={() => removeFromFavorite(movie.id)}>Remove</button>
         </div>
       ))}
     </div>
   );
 };
 
-export default WatchList;
+export default Favorite;

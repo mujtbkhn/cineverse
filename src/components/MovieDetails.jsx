@@ -13,7 +13,8 @@ const MovieDetails = () => {
   const [similar, setSimilar] = useState([]);
   const [cast, setCast] = useState([]);
   const [personId, setPersonId] = useState(null);
-  const [search, setSearch] = useState([]);
+  const [fav, setFav] = useState(false);
+  const [watchList, setWatchList] = useState(false);
 
   const searchText = useRef();
   const navigate = useNavigate();
@@ -43,7 +44,6 @@ const MovieDetails = () => {
       })
       .catch((err) => console.error("error:" + err));
   };
-  
 
   const fetchMovies = async () => {
     const data = await fetch(
@@ -130,10 +130,37 @@ const MovieDetails = () => {
 
     fetch(url, options)
       .then((res) => res.json())
-      // .then((json) => console.log(json))
+      .then((json) => {
+        // console.log(json);
+        setWatchList(true);
+      })
       .catch((err) => console.error("error:" + err));
   };
 
+  const addToFavorite = () => {
+    const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/favorite`;
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
+      },
+      body: JSON.stringify({
+        media_type: "movie",
+        media_id: details.id,
+        favorite: true,
+      }),
+    };
+
+    fetch(url, options)
+      .then((res) => res.json())
+      .then((json) => {
+        // console.log(json);
+        setFav(true);
+      })
+      .catch((err) => console.error("error:" + err));
+  };
   const items = [
     {
       title: "Author : ",
@@ -210,14 +237,24 @@ const MovieDetails = () => {
                 ))
                 .slice(0, 8)}
             </div>
-            <button
-              onClick={() => {
-                addToWatchList();
-              }}
-              className="flex justify-center w-48 px-8 py-2 m-5 mx-auto font-semibold text-white bg-red-700 rounded-md"
-            >
-              Add to WatchList
-            </button>
+            <div className="flex items-center justify-between mx-auto">
+              <button
+                onClick={() => {
+                  addToFavorite();
+                }}
+                className="flex justify-center mx-auto text-4xl w-96"
+              >
+                {fav ? "❤️" : "♡"}
+              </button>
+              <button
+                onClick={() => {
+                  addToWatchList();
+                }}
+                className="flex justify-center px-8 py-2 m-5 mx-auto font-semibold text-white bg-red-700 rounded-md w-52"
+              >
+                {watchList ? "Added to watchList" : "Add to watchList"}
+              </button>
+            </div>
           </div>
         </div>
         <div>
