@@ -5,7 +5,12 @@ import MovieCard from "./MovieCard";
 const Favorite = () => {
   const [favorite, setFavorite] = useState([]);
   useEffect(() => {
-    fetchFavorite();
+    const savedFavorites = JSON.parse(localStorage.getItem("favorites"));
+    if (savedFavorites) {
+      setFavorite(savedFavorites);
+    } else {
+      fetchFavorite();
+    }
   }, []);
 
   const fetchFavorite = async () => {
@@ -16,10 +21,14 @@ const Favorite = () => {
     const json = await data.json();
     // console.log(json.results);
     setFavorite(json.results);
+
+    localStorage.setItem('favorites', JSON.stringify(json.results))
   };
   const removeFromFavorite = (id) => {
     const updatedFavorite = favorite.filter((item) => item.id !== id);
     setFavorite(updatedFavorite);
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorite))
+
   };
   return (
     <div className="flex flex-wrap justify-center gap-10 p-10">

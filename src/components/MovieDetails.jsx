@@ -26,6 +26,22 @@ const MovieDetails = () => {
     fetchReviews();
     fetchSimilarMovies();
     fetchCast();
+
+    const favoritesFromStorage = JSON.parse(
+      localStorage.getItem("favorites") || []
+    );
+    const isFavorite = favoritesFromStorage.some(
+      (movie) => movie.id === parseInt(movieId)
+    );
+    setFav(isFavorite);
+
+    const WatchListsFromStorage = JSON.parse(
+      localStorage.getItem("WatchList") || []
+    );
+    const isWatchList = WatchListsFromStorage.some(
+      (movie) => movie.id === parseInt(movieId)
+    );
+    setWatchList(isWatchList);
   }, [movieId]);
 
   const handleSearch = () => {
@@ -61,7 +77,7 @@ const MovieDetails = () => {
       OPTIONS
     );
     const json = await data.json();
-    // console.log(json);
+    console.log(json);
     setDetails(json);
   };
   const fetchImages = async () => {
@@ -132,6 +148,10 @@ const MovieDetails = () => {
       .then((res) => res.json())
       .then((json) => {
         // console.log(json);
+        const existingWatchLists =
+          JSON.parse(localStorage.getItem("WatchList")) || [];
+        const updatedWatchLists = [...existingWatchLists, details];
+        localStorage.setItem("WatchList", JSON.stringify(updatedWatchLists));
         setWatchList(true);
       })
       .catch((err) => console.error("error:" + err));
@@ -157,6 +177,10 @@ const MovieDetails = () => {
       .then((res) => res.json())
       .then((json) => {
         // console.log(json);
+        const existingFavorites =
+          JSON.parse(localStorage.getItem("favorites")) || [];
+        const updatedFavorites = [...existingFavorites, details];
+        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
         setFav(true);
       })
       .catch((err) => console.error("error:" + err));
@@ -208,13 +232,19 @@ const MovieDetails = () => {
             <h1 className="text-xl italic font-semibold">{details?.tagline}</h1>
 
             <h3>{movieDetails?.overview}</h3>
+            <div className="flex flex-row justify-center gap-10 m-1 font-bold">
+              {details && details.genres.map((genre) => <h3>{genre.name}</h3>)}
+            </div>
             <h2>
               Release Date:{" "}
               <div className="inline font-bold">
                 {movieDetails?.release_date}
               </div>
             </h2>
-            <h2>Rating: {movieDetails?.vote_average}</h2>
+            <div className="flex justify-start gap-10">
+              <h2>Rating: {movieDetails?.vote_average}</h2>
+              <h2>Runtime: {details?.runtime}min</h2>
+            </div>
             <h2 className="p-2 text-3xl ">Cast: </h2>
             <div className="flex flex-wrap justify-center gap-10 ">
               {cast

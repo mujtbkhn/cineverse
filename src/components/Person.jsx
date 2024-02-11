@@ -36,8 +36,8 @@ const Person = () => {
   return (
     <div>
       <div className="md:flex">
-        <div className="w-screen m-4 md:p-5 md:m-5 md:flex">
-          <img src={IMG_CDN + details.profile_path} />
+        <div className="object-contain w-screen m-4 md:p-5 md:m-5 md:flex">
+          <img className="object-contain" src={IMG_CDN + details.profile_path} />
         </div>
         <div className="flex flex-col gap-5 p-3 m-3 md:p-5 md:m-5">
           <h1 className="text-3xl italic font-semi-bold">{details.name}</h1>

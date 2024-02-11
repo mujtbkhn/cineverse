@@ -5,7 +5,12 @@ import MovieCard from "./MovieCard";
 const WatchList = () => {
   const [watchList, setWatchList] = useState([]);
   useEffect(() => {
-    fetchWatchList();
+    const savedWatchList = JSON.parse(localStorage.getItem("WatchList"));
+    if (savedWatchList) {
+      setWatchList(savedWatchList);
+    } else {
+      fetchWatchList();
+    }
   }, []);
 
   const fetchWatchList = async () => {
@@ -16,10 +21,12 @@ const WatchList = () => {
     const json = await data.json();
     // console.log(json.results);
     setWatchList(json.results);
+        localStorage.setItem('WatchList', JSON.stringify(json.results))
   };
   const removeFromWatchList = (id) =>{
     const updatedWatchList = watchList.filter(item => item.id !== id)
     setWatchList(updatedWatchList)
+        localStorage.setItem('WatchList', JSON.stringify(updatedWatchList))
   }
   return (
     <div className="flex flex-wrap justify-center gap-10 p-10">
