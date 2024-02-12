@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { IMG_CDN, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
@@ -44,7 +44,7 @@ const MovieDetails = () => {
     setWatchList(isWatchList);
   }, [movieId]);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     const url = `https://api.themoviedb.org/3/search/movie?query=${searchText.current.value}&include_adult=false&language=en-US&page=1`;
     fetch(url, OPTIONS)
       .then((res) => res.json())
@@ -59,7 +59,7 @@ const MovieDetails = () => {
         }
       })
       .catch((err) => console.error("error:" + err));
-  };
+  }, [navigate]);
 
   const fetchMovies = async () => {
     const data = await fetch(
@@ -128,7 +128,7 @@ const MovieDetails = () => {
     setPersonId(id);
   };
 
-  const addToWatchList = async () => {
+  const addToWatchList = useCallback(() => {
     const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/watchlist`;
     const options = {
       method: "POST",
@@ -155,9 +155,9 @@ const MovieDetails = () => {
         setWatchList(true);
       })
       .catch((err) => console.error("error:" + err));
-  };
+  }, [details,watchList]);
 
-  const addToFavorite = () => {
+  const addToFavorite = useCallback(() => {
     const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/favorite`;
     const options = {
       method: "POST",
@@ -184,17 +184,21 @@ const MovieDetails = () => {
         setFav(true);
       })
       .catch((err) => console.error("error:" + err));
-  };
-  const items = [
-    {
-      title: "Author : ",
-      content: <div> {reviews?.results[0]?.author}</div>,
-    },
-    {
-      title: "Review : ",
-      content: <div> {reviews?.results[0]?.content}</div>,
-    },
-  ];
+  }, [details, fav]);
+  
+  const items = useMemo(
+    () => [
+      {
+        title: "Author : ",
+        content: <div> {reviews?.results[0]?.author}</div>,
+      },
+      {
+        title: "Review : ",
+        content: <div> {reviews?.results[0]?.content}</div>,
+      },
+    ],
+    [reviews]
+  );
 
   if (!movieDetails) return <div>Loading...</div>;
 
