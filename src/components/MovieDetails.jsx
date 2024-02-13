@@ -32,6 +32,33 @@ const MovieDetails = () => {
     fetchReviews();
     fetchSimilarMovies();
     fetchCast();
+
+    try {
+      const favoritesFromStorage = JSON.parse(
+        localStorage.getItem("favorites") || "[]"
+      );
+      const isFavorite = favoritesFromStorage.some(
+        (movie) => movie.id === parseInt(movieId)
+      );
+      setFav(isFavorite);
+    } catch (error) {
+      console.error("Error parsing favorites from localStorage:", error);
+      // Handle the error, e.g., set the 'fav' state to false
+      setFav(false);
+    }
+    try {
+      const watchListsFromStorage = JSON.parse(
+        localStorage.getItem("WatchList") || "[]"
+      );
+      const isWatchList = watchListsFromStorage.some(
+        (movie) => movie.id === parseInt(movieId)
+      );
+      setWatchList(isWatchList);
+    } catch (error) {
+      console.error("Error parsing favorites from localStorage:", error);
+      // Handle the error, e.g., set the 'fav' state to false
+      setWatchList(false);
+    }
   }, [movieId]);
 
   const handleSearch = useCallback(() => {
@@ -198,21 +225,31 @@ const MovieDetails = () => {
 
   return (
     <>
-      <div className="flex justify-center">
-        <input
-          ref={searchText}
-          className="px-5 py-2 m-2 border-2"
-          type="text"
-          placeholder="Enter Movie Name"
-        />
-        <button
-          onClick={() => {
-            handleSearch();
-          }}
-          className="px-5 py-2 m-2 text-white bg-black rounded-md"
-        >
-          Search
-        </button>
+      <div className="flex flex-col justify-center md:flex-row">
+        <div className="flex justify-center">
+          <input
+            ref={searchText}
+            className="border-2 rounded-md md:w-48 w-28 md:m-2 md:py-2 md:px-5"
+            type="text"
+            placeholder="Enter Movie Name"
+          />
+          <button
+            onClick={() => {
+              handleSearch();
+            }}
+            className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5"
+          >
+            Search
+          </button>
+        </div>
+        <div className="flex justify-center">
+          <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
+            <Link to={"/favorite"}> Favorites</Link>
+          </button>
+          <button className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5">
+            <Link to={"/watchlist"}> WatchList</Link>
+          </button>
+        </div>
       </div>
       <div className="justify-center md:flex-col md:flex ">
         <div className="p-5 mr-10 md:mr-0 md:p-10 md:flex">

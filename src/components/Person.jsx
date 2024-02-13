@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IMG_CDN, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
 
@@ -35,9 +35,20 @@ const Person = () => {
 
   return (
     <div>
+      <div className="flex justify-center">
+        <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
+          <Link to={"/favorite"}> Favorites</Link>
+        </button>
+        <button className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5">
+          <Link to={"/watchlist"}> WatchList</Link>
+        </button>
+      </div>
       <div className="md:flex">
         <div className="object-contain w-screen m-4 md:p-5 md:m-5 md:flex">
-          <img className="object-contain" src={IMG_CDN + details.profile_path} />
+          <img
+            className="object-contain"
+            src={IMG_CDN + details.profile_path}
+          />
         </div>
         <div className="flex flex-col gap-5 p-3 m-3 md:p-5 md:m-5">
           <h1 className="text-3xl italic font-semi-bold">{details.name}</h1>
@@ -47,7 +58,9 @@ const Person = () => {
           <h1 className="text-xl">Popularity: {details.popularity}</h1>
         </div>
       </div>
-      <h1 className="flex justify-center p-4 text-2xl font-bold md:text-3xl">Movies {details.name} has worked in: </h1>
+      <h1 className="flex justify-center p-4 text-2xl font-bold md:text-3xl">
+        Movies {details.name} has worked in:{" "}
+      </h1>
       <div className="flex flex-wrap justify-center gap-5 p-3">
         {credits.map((movie) => (
           <MovieCard

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
+import { Link } from "react-router-dom";
 
 const WatchList = () => {
   const [watchList, setWatchList] = useState([]);
@@ -21,28 +22,40 @@ const WatchList = () => {
     const json = await data.json();
     // console.log(json.results);
     setWatchList(json.results);
-        localStorage.setItem('WatchList', JSON.stringify(json.results))
+    localStorage.setItem("WatchList", JSON.stringify(json.results));
   };
-  const removeFromWatchList = (id) =>{
-    const updatedWatchList = watchList.filter(item => item.id !== id)
-    setWatchList(updatedWatchList)
-        localStorage.setItem('WatchList', JSON.stringify(updatedWatchList))
-  }
+  const removeFromWatchList = (id) => {
+    const updatedWatchList = watchList.filter((item) => item.id !== id);
+    setWatchList(updatedWatchList);
+    localStorage.setItem("WatchList", JSON.stringify(updatedWatchList));
+  };
   return (
-    <div className="flex flex-wrap justify-center gap-10 p-10">
-      {watchList.map((movie) => (
-        <div>
-          <h1>{movie?.original_title}</h1>
-          <MovieCard
-            className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
-            key={movie.id}
-            posterPath={movie?.poster_path}
-            id={movie.id}
-          />
-          <button onClick={() => removeFromWatchList(movie.id)}>watched?</button>
+    <>
+    <div className="flex justify-center">
+          <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
+          <Link to={'/favorite'}>  Favorites</Link>
+          </button>
+          <button className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5">
+           <Link to={'/watchlist'}> WatchList</Link>
+          </button>
         </div>
-      ))}
-    </div>
+      <div className="flex flex-wrap justify-center gap-10 p-10">
+        {watchList.map((movie) => (
+          <div>
+            <h1>{movie?.original_title}</h1>
+            <MovieCard
+              className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
+              key={movie.id}
+              posterPath={movie?.poster_path}
+              id={movie.id}
+            />
+            <button onClick={() => removeFromWatchList(movie.id)}>
+              watched?
+            </button>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
 
