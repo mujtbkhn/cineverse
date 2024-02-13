@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { IMG_CDN, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
@@ -26,22 +32,6 @@ const MovieDetails = () => {
     fetchReviews();
     fetchSimilarMovies();
     fetchCast();
-
-    const favoritesFromStorage = JSON.parse(
-      localStorage.getItem("favorites") || []
-    );
-    const isFavorite = favoritesFromStorage.some(
-      (movie) => movie.id === parseInt(movieId)
-    );
-    setFav(isFavorite);
-
-    const WatchListsFromStorage = JSON.parse(
-      localStorage.getItem("WatchList") || []
-    );
-    const isWatchList = WatchListsFromStorage.some(
-      (movie) => movie.id === parseInt(movieId)
-    );
-    setWatchList(isWatchList);
   }, [movieId]);
 
   const handleSearch = useCallback(() => {
@@ -63,7 +53,7 @@ const MovieDetails = () => {
 
   const fetchMovies = async () => {
     const data = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}`,
+      `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
       OPTIONS
     );
     const json = await data.json();
@@ -77,7 +67,7 @@ const MovieDetails = () => {
       OPTIONS
     );
     const json = await data.json();
-    console.log(json);
+    // console.log(json);
     setDetails(json);
   };
   const fetchImages = async () => {
@@ -148,6 +138,8 @@ const MovieDetails = () => {
       .then((res) => res.json())
       .then((json) => {
         // console.log(json);
+        setWatchList(true);
+
         const existingWatchLists =
           JSON.parse(localStorage.getItem("WatchList")) || [];
         const updatedWatchLists = [...existingWatchLists, details];
@@ -155,7 +147,7 @@ const MovieDetails = () => {
         setWatchList(true);
       })
       .catch((err) => console.error("error:" + err));
-  }, [details,watchList]);
+  }, [details, setWatchList]);
 
   const addToFavorite = useCallback(() => {
     const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/favorite`;
@@ -177,6 +169,8 @@ const MovieDetails = () => {
       .then((res) => res.json())
       .then((json) => {
         // console.log(json);
+        setFav(true);
+
         const existingFavorites =
           JSON.parse(localStorage.getItem("favorites")) || [];
         const updatedFavorites = [...existingFavorites, details];
@@ -184,8 +178,8 @@ const MovieDetails = () => {
         setFav(true);
       })
       .catch((err) => console.error("error:" + err));
-  }, [details, fav]);
-  
+  }, [details, setFav]);
+
   const items = useMemo(
     () => [
       {
