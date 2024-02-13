@@ -214,8 +214,8 @@ const MovieDetails = () => {
           Search
         </button>
       </div>
-      <div className="flex-col justify-center md:flex ">
-        <div className="p-5 md:p-10 md:flex">
+      <div className="justify-center md:flex-col md:flex ">
+        <div className="p-5 mr-10 md:mr-0 md:p-10 md:flex">
           <div className="justify-center md:flex">
             <img
               className="object-contain w-screen m-5 h-3/4"
@@ -258,19 +258,25 @@ const MovieDetails = () => {
                       ) : null}
                     </Link>
                     <h1 className="font-bold">
-                      {cast?.original_name.slice(0, 15) + "..."}
+                      {window.innerWidth < 768
+                        ? cast?.original_name.slice(0, 10) + "..."
+                        : cast?.original_name.slice(0, 15) + "..."}
                     </h1>
-                    <h2>{cast?.character.slice(0, 15) + "..."}</h2>
+                    <h2>
+                      {window.innerWidth < 768
+                        ? cast?.character.slice(0, 10) + "..."
+                        : cast?.character.slice(0, 15) + "..."}
+                    </h2>
                   </div>
                 ))
                 .slice(0, 8)}
             </div>
-            <div className="flex items-center justify-between mx-auto">
+            <div className="flex flex-col items-center justify-between mx-auto md:flex-row">
               <button
                 onClick={() => {
                   addToFavorite();
                 }}
-                className="flex justify-center mx-auto text-4xl w-96"
+                className="flex justify-around mx-auto text-4xl md:justify-center w-96"
               >
                 {fav ? "❤️" : "♡"}
               </button>
