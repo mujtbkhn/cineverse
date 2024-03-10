@@ -9,6 +9,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { IMG_CDN, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
 import Accordion from "./Accordion";
+import useDebounce from "../hooks/useDebounce";
 
 const MovieDetails = () => {
   const { movieId } = useParams();
@@ -21,9 +22,13 @@ const MovieDetails = () => {
   const [personId, setPersonId] = useState(null);
   const [fav, setFav] = useState(false);
   const [watchList, setWatchList] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const searchText = useRef();
   const navigate = useNavigate();
+
+  const debouncedSearchTerm = useDebounce(searchTerm, 700);
 
   useEffect(() => {
     fetchMovies();
@@ -61,22 +66,41 @@ const MovieDetails = () => {
     }
   }, [movieId]);
 
-  const handleSearch = useCallback(() => {
-    const url = `https://api.themoviedb.org/3/search/movie?query=${searchText.current.value}&include_adult=false&language=en-US&page=1`;
-    fetch(url, OPTIONS)
-      .then((res) => res.json())
-      .then((json) => {
-        if (json && json.results && json.results.length > 0) {
-          const movieId = json.results[0]?.id;
-          // Redirect to the MovieDetails page with the correct movieId
-          navigate(`/movieDetails/${movieId}`);
-        } else {
-          console.log("No movie found");
-          // Optionally, you can provide feedback to the user
-        }
-      })
-      .catch((err) => console.error("error:" + err));
-  }, [navigate]);
+  useEffect(() => {
+    const fetchUsers = () => {
+      if (debouncedSearchTerm.trim() === "") {
+        setSuggestions([]);
+        return;
+      }
+
+      const url = `https://api.themoviedb.org/3/search/movie?query=${debouncedSearchTerm}&include_adult=false&language=en-US&page=1`;
+      fetch(url, OPTIONS)
+        .then((res) => res.json())
+        .then((json) => setSuggestions(json))
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+    fetchUsers();
+  }, [debouncedSearchTerm]);
+
+  // const handleSearch = useCallback(() => {
+  //   const url = `https://api.themoviedb.org/3/search/movie?query=${searchText.current.value}&include_adult=false&language=en-US&page=1`;
+  //   fetch(url, OPTIONS)
+  //     .then((res) => res.json())
+  //     .then((json) => {
+  //       if (json && json.results && json.results.length > 0) {
+  //         // console.log(json.results);
+  //         const movieId = json.results[0]?.id;
+  //         // Redirect to the MovieDetails page with the correct movieId
+  //         navigate(`/movieDetails/${movieId}`);
+  //       } else {
+  //         console.log("No movie found");
+  //         // Optionally, you can provide feedback to the user
+  //       }
+  //     })
+  //     .catch((err) => console.error("error:" + err));
+  // }, [navigate]);
 
   const fetchMovies = async () => {
     const data = await fetch(
@@ -229,18 +253,39 @@ const MovieDetails = () => {
         <div className="flex justify-center">
           <input
             ref={searchText}
-            className="border-2 rounded-md md:w-48 w-28 md:m-2 md:py-2 md:px-5"
+            value={searchTerm}
+            className="relative border-2 rounded-md md:w-48 w-28 md:m-2 md:py-2 md:px-5"
             type="text"
             placeholder="Enter Movie Name"
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <button
+          {/* <button
             onClick={() => {
               handleSearch();
             }}
             className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5"
           >
             Search
-          </button>
+          </button> */}
+          <ul className="absolute flex flex-wrap bg-gray-200 top-20 w-[800px] mt-6 my-auto">
+            {suggestions?.results?.map((movie, index) => {
+              const movieTitle= movie.title.slice(0, 25) + "..."
+              if (movie.poster_path) {
+                return (
+                  <li key={movie.id}>
+                    <h1>{movieTitle}</h1>
+                    <MovieCard
+                      key={movie.id}
+                      posterPath={movie?.poster_path}
+                      id={movie.id}
+                    />
+                  </li>
+                );
+              } else {
+                return null;
+              }
+            })}
+          </ul>
         </div>
         <div className="flex justify-center">
           <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
