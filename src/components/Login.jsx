@@ -93,7 +93,7 @@ const Login = () => {
                 <button onClick={handleButtonClick} className='w-full p-4 my-8 bg-red-700 rounded-xl' >{isSignInForm ? "Sign In" : "Sign Up"}</button>
                 <p className='pb-5 text-red-700'>{errorMessage}</p>
                 <p className='cursor-pointer' onClick={toggleSignInForm} >
-                    {isSignInForm ? "New to NetFlix? Sign Up Now" : "Already Registered? Sign In now"}
+                    {isSignInForm ? "New to Cineverse? Sign Up Now" : "Already Registered? Sign In now"}
                 </p>
             </form>
         </>

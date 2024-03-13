@@ -58,7 +58,7 @@ const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
     <div className="absolute z-10 w-screen px-8 py-2 md:bg-transparent bg-gradient-to-b from-black">
       <div className="justify-between md:flex">
       
-      <img className="mx-auto md:mx-0 w-44" src={LOGO} alt="logo" />
+      <img className="mx-auto w-36 md:mx-0" src={LOGO} alt="logo" />
 
       {user && (
         <div className="flex justify-center pt-5 text-center align-middle">
@@ -87,7 +87,7 @@ const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
             src={user.photoURL}
             />
           <button
-            className="p-2 ml-2 font-bold text-white"
+            className="ml-2 -mt-16 font-bold text-white"
             onClick={handleSignOut}
             >
             (Sign Out)
