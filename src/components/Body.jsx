@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import WatchList from "./WatchList";
 import Favorite from "./Favorite";
 import { Suspense, lazy } from "react";
+import ExploreMovies from "./ExploreMovies";
 
 const MovieDetails = lazy(() => import("./MovieDetails"));
 const Person = lazy(() => import("./Person"));
@@ -17,6 +18,10 @@ const Body = () => {
     {
       path: "/browse",
       element: <Browse />,
+    },
+    {
+      path: "/exploreMovies",
+      element: <ExploreMovies />,
     },
     {
       path: "/movieDetails/:movieId",
