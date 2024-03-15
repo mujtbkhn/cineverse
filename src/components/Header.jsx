@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { auth } from "../utils/firebase.config";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
@@ -56,10 +56,14 @@ const Header = () => {
 const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   return (
     <div className="absolute z-10 w-screen px-8 py-2 md:bg-transparent bg-gradient-to-b from-black">
-      <div className="justify-between md:flex">
+      <div className="justify-between my-auto md:flex">
       
-      <img className="mx-auto w-36 md:mx-0" src={LOGO} alt="logo" />
+      <img className="m-auto w-36 md:mx-0" src={LOGO} alt="logo" />
 
+     <Link to={"/exploreMovies"}> <button className="h-10 px-8 my-auto mr-3 text-white bg-purple-600 rounded-md " >
+          Explore Movies
+      </button>
+      </Link>
       {user && (
         <div className="flex justify-center pt-5 text-center align-middle">
           {showGptSearch && (
