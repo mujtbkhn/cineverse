@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
 import { Link } from "react-router-dom";
+import Header from "./Header";
 
 const Favorite = () => {
   const [favorite, setFavorite] = useState([]);
@@ -32,6 +33,8 @@ const Favorite = () => {
   };
   return (
     <>
+      <Header enableAuthentication={false} />
+
       <div className="flex justify-center">
         <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
           <Link to={"/favorite"}> Favorites</Link>

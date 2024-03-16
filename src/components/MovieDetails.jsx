@@ -10,6 +10,7 @@ import { IMG_CDN, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
 import Accordion from "./Accordion";
 import useDebounce from "../hooks/useDebounce";
+import Header from "./Header";
 
 const MovieDetails = () => {
   const { movieId } = useParams();
@@ -249,6 +250,7 @@ const MovieDetails = () => {
 
   return (
     <>
+      <Header enableAuthentication={false} />
       <div className="flex flex-col justify-center md:flex-row">
         <div className="flex justify-center">
           <input
@@ -269,7 +271,7 @@ const MovieDetails = () => {
           </button> */}
           <ul className="absolute flex flex-wrap bg-gray-200 top-20 w-[800px] mt-6 my-auto">
             {suggestions?.results?.map((movie, index) => {
-              const movieTitle= movie.title.slice(0, 25) + "..."
+              const movieTitle = movie.title.slice(0, 25) + "...";
               if (movie.poster_path) {
                 return (
                   <li key={movie.id}>

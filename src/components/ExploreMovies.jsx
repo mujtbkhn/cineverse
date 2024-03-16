@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
+import Header from "./Header";
 
 const ExploreMovies = () => {
   const [movies, setMovies] = useState([]);
@@ -10,6 +11,7 @@ const ExploreMovies = () => {
   useEffect(() => {
     fetchMovies();
   }, []);
+  
 
   const fetchMovies = async () => {
     setLoading(true);
@@ -24,7 +26,7 @@ const ExploreMovies = () => {
       console.log(json.results);
       setMovies((prevMovies) => [...prevMovies, ...json.results]);
       setPage((prevPage) => prevPage + 1);
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
       setError(error);
       console.log("error occurred while fetching: ", error);
@@ -49,6 +51,9 @@ const ExploreMovies = () => {
 
   return (
     <>
+    <div>
+      <Header enableAuthentication={false} />
+    </div>
       <div className="flex justify-center text-3xl align-middle">
         Explore Movies From TMDB API
       </div>

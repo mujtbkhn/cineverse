@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
 import { Link } from "react-router-dom";
+import Header from "./Header";
 
 const WatchList = () => {
   const [watchList, setWatchList] = useState([]);
@@ -31,14 +32,16 @@ const WatchList = () => {
   };
   return (
     <>
-    <div className="flex justify-center">
-          <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
-          <Link to={'/favorite'}>  Favorites</Link>
-          </button>
-          <button className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5">
-           <Link to={'/watchlist'}> WatchList</Link>
-          </button>
-        </div>
+      <Header enableAuthentication={false} />
+
+      <div className="flex justify-center">
+        <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
+          <Link to={"/favorite"}> Favorites</Link>
+        </button>
+        <button className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5">
+          <Link to={"/watchlist"}> WatchList</Link>
+        </button>
+      </div>
       <div className="flex flex-wrap justify-center gap-10 p-10">
         {watchList.map((movie) => (
           <div>

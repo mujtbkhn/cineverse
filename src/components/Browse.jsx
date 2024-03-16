@@ -18,8 +18,7 @@ const Browse = () => {
 
   const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   return (
-    <div>
-      <div >
+      <div className="overflow-y-scroll scrollbar-hide">
         <Header />
         {showGptSearch ? (
           <GPTSearch />
@@ -31,15 +30,6 @@ const Browse = () => {
           </>
         )}
       </div>
-      {/**
-       * Main Container
-       *  -Video Background
-       *  -Video contents
-       * Secondary Container
-       *  -MovieLists * n
-       *  -Cards * n
-       */}
-    </div>
   );
 };
 
