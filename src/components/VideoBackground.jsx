@@ -11,7 +11,7 @@ const VideoBackground = ({ movieId }) => {
   return (
     <div className="h-screen md:pt-0 pt-[60%]  bg-black">
       {/* + "?&autoplay=1&mute=1" */}
-      <iframe
+      {/* <iframe
         className="w-full md:h-screen aspect-video"
         src={
           "https://www.youtube.com/embed/" +
@@ -20,7 +20,7 @@ const VideoBackground = ({ movieId }) => {
         }
         title="YouTube video player"
         allow="accelerometer; autoplay;clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      ></iframe>
+      ></iframe> */}
     </div>
   );
 };

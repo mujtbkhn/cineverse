@@ -24,7 +24,9 @@ const MovieDetails = () => {
   const [fav, setFav] = useState(false);
   const [watchList, setWatchList] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+  const [personSuggestions, setPersonSuggestions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchPerson, setSearchPerson] = useState("");
 
   const searchText = useRef();
   const navigate = useNavigate();
@@ -74,16 +76,42 @@ const MovieDetails = () => {
         return;
       }
 
-      const url = `https://api.themoviedb.org/3/search/movie?query=${debouncedSearchTerm}&include_adult=false&language=en-US&page=1`;
+      const url = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchTerm}&include_adult=false&language=en-US&page=1`;
       fetch(url, OPTIONS)
-        .then((res) => res.json())
-        .then((json) => setSuggestions(json))
-        .catch((err) => {
-          console.error(err);
-        });
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        setSuggestions(json);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    
     };
     fetchUsers();
   }, [debouncedSearchTerm]);
+  
+  useEffect(() => {
+    const searchPersons = () => {
+      if (searchPerson.trim() === "") {
+        setPersonSuggestions([]);
+        return;
+      }
+
+      const url = `https://api.themoviedb.org/3/search/person?query=${searchPerson}&include_adult=false&language=en-US&page=1`;
+      fetch(url, OPTIONS)
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        setPersonSuggestions(json);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    
+    };
+    searchPersons();
+  }, [searchPerson]);
 
   // const handleSearch = useCallback(() => {
   //   const url = `https://api.themoviedb.org/3/search/movie?query=${searchText.current.value}&include_adult=false&language=en-US&page=1`;
@@ -249,10 +277,10 @@ const MovieDetails = () => {
   if (!movieDetails) return <div>Loading...</div>;
 
   return (
-    <>
-      <Header enableAuthentication={false} />
+    <div className="bg-[#04152D] text-white">
+      {/* <Header enableAuthentication={false} /> */}
       <div className="flex flex-col justify-center md:flex-row">
-        <div className="flex justify-center">
+        <div className="flex justify-center text-black">
           <input
             ref={searchText}
             value={searchTerm}
@@ -269,17 +297,24 @@ const MovieDetails = () => {
           >
             Search
           </button> */}
-          <ul className="absolute flex flex-wrap bg-gray-200 top-20 w-[800px] mt-6 my-auto">
-            {suggestions?.results?.map((movie, index) => {
-              const movieTitle = movie.title.slice(0, 25) + "...";
+          <ul className="absolute flex flex-wrap text-black bg-gray-200 top-20 w-[800px] mt-6 my-auto">
+            {suggestions?.results?.map((movie) => {
+              // const movieTitle = movie.title.slice(0, 25) + "...";
               if (movie.poster_path) {
                 return (
-                  <li key={movie.id}>
-                    <h1>{movieTitle}</h1>
+                  <li key={movie.id} className="text-black">
+                    <h1>{movie.title}</h1>
                     <MovieCard
                       key={movie.id}
                       posterPath={movie?.poster_path}
                       id={movie.id}
+                      rating={movie.vote_average.toFixed(1)}
+                      trimmedTitle={
+                        movie.title?.length > 10
+                          ? movie.title.slice(0, 15) + "..."
+                          : movie.title
+                      }
+                      release_date={movie.release_date}
                     />
                   </li>
                 );
@@ -287,6 +322,42 @@ const MovieDetails = () => {
                 return null;
               }
             })}
+          </ul>
+        </div>
+        <div className="flex justify-center text-black">
+          <input
+            // ref={searchText}
+            value={searchPerson}
+            className="relative border-2 rounded-md md:w-48 w-28 md:m-2 md:py-2 md:px-5"
+            type="text"
+            placeholder="Enter Movie Name"
+            onChange={(e) => setSearchPerson(e.target.value)}
+          />
+          <ul className="absolute flex flex-wrap text-black bg-gray-200 top-20 w-[800px] mt-6 my-auto">
+            {/* {personSuggestions?.results?.map((movie) => {
+              // const movieTitle = movie.title.slice(0, 25) + "...";
+              if (movie.poster_path) {
+                return (
+                  <li key={movie.id} className="text-black">
+                    <h1>{movie.title}</h1>
+                    <MovieCard
+                      key={movie.id}
+                      posterPath={movie?.poster_path}
+                      id={movie.id}
+                      rating={movie.vote_average.toFixed(1)}
+                      trimmedTitle={
+                        movie.title?.length > 10
+                          ? movie.title.slice(0, 15) + "..."
+                          : movie.title
+                      }
+                      release_date={movie.release_date}
+                    />
+                  </li>
+                );
+              } else {
+                return null;
+              }
+            })} */}
           </ul>
         </div>
         <div className="flex justify-center">
@@ -375,14 +446,7 @@ const MovieDetails = () => {
             </div>
           </div>
         </div>
-        <div>
-          <Accordion items={items} />
-        </div>
-        {/* <h2>Vote count: {movieDetails?.vote_count}</h2> */}
-        {/* <h3>Author: {reviews?.results[0]?.author}</h3>
-      <h3>Review: {reviews?.results[0]?.content}</h3> */}
-        {/* <img className="object-contain w-48 h-48" src={IMG_CDN + details?.backdrop_path}/> */}
-        {/* <img className="object-contain w-48 h-48" src={IMG_CDN + details?.belongs_to_collection?.backdrop_path} /> */}
+        <div></div>
         <div className="flex flex-wrap justify-center gap-10 pb-5">
           {images.map((image) => (
             <img
@@ -399,11 +463,18 @@ const MovieDetails = () => {
               key={movie.id}
               posterPath={movie?.poster_path}
               id={movie.id}
+              rating={movie.vote_average.toFixed(1)}
+              trimmedTitle={
+                movie.title.length > 10
+                  ? movie.title.slice(0, 15) + "..."
+                  : movie.title
+              }
+              release_date={movie.release_date}
             />
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

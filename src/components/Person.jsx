@@ -35,7 +35,7 @@ const Person = () => {
   };
 
   return (
-    <div>
+    <div className="bg-[#04152D] text-white">
       <Header enableAuthentication={false} />
 
       <div className="flex justify-center">
@@ -71,6 +71,13 @@ const Person = () => {
             key={movie.id}
             posterPath={movie?.poster_path}
             id={movie.id}
+            rating={movie.vote_average.toFixed(1)}
+            trimmedTitle={
+              movie.title.length > 10
+                ? movie.title.slice(0, 15) + "..."
+                : movie.title
+            }
+            release_date={movie.release_date}
           />
         ))}
       </div>

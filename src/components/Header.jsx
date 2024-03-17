@@ -65,15 +65,15 @@ const Header = ({ enableAuthentication = true }) => {
   };
   const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   return (
-    <div className="absolute z-10 w-full px-8 py-2 md:bg-transparent bg-gradient-to-b from-black">
+    <div className="absolute z-10 w-full px-8 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-1 ">
       <div className="justify-between my-auto md:flex">
-      <Link to={"/browse"}>  <img className="object-contain w-32 md:mx-0" src={LOGO} alt="logo" /></Link>
+      <Link to={"/browse"}>  <img className="object-contain w-20 md:mx-0" src={LOGO} alt="logo" /></Link>
 
         {user && (
           <div className="flex justify-center pt-5 mr-24 text-center align-middle">
             <Link to={"/exploreMovies"}>
               {" "}
-              <div className="text-xl text-white ">Movies</div>
+              <div className="text-xl text-white hover:text-red-700">Movies</div>
             </Link>
             <img
               className="mx-4 w-7 h-7"

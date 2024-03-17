@@ -32,7 +32,7 @@ const Favorite = () => {
     localStorage.setItem("favorites", JSON.stringify(updatedFavorite));
   };
   return (
-    <>
+    <div className="bg-[#04152D] text-white">
       <Header enableAuthentication={false} />
 
       <div className="flex justify-center">
@@ -46,18 +46,25 @@ const Favorite = () => {
       <div className="flex flex-wrap justify-center gap-10 p-10">
         {favorite.map((movie) => (
           <div>
-            <h1>{movie?.original_title}</h1>
+            {/* <h1>{movie?.original_title}</h1> */}
             <MovieCard
               className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
               key={movie.id}
               posterPath={movie?.poster_path}
               id={movie.id}
+              rating={movie.vote_average.toFixed(1)}
+              trimmedTitle={
+                movie.title.length > 10
+                  ? movie.title.slice(0, 15) + "..."
+                  : movie.title
+              }
+              release_date={movie.release_date}
             />
             <button onClick={() => removeFromFavorite(movie.id)}>Remove</button>
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

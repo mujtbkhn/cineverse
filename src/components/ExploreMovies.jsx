@@ -11,7 +11,6 @@ const ExploreMovies = () => {
   useEffect(() => {
     fetchMovies();
   }, []);
-  
 
   const fetchMovies = async () => {
     setLoading(true);
@@ -50,26 +49,33 @@ const ExploreMovies = () => {
   }, [loading]);
 
   return (
-    <>
-    <div>
-      <Header enableAuthentication={false} />
-    </div>
+    <div className="bg-[#04152D] text-white ">
+      <div>
+        <Header enableAuthentication={false} />
+      </div>
       <div className="flex justify-center text-3xl align-middle">
         Explore Movies From TMDB API
       </div>
       <div className="flex flex-wrap justify-center gap-10 md:flex-row md:justify-center ">
         {movies?.map((movie) => (
           <MovieCard
-            className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
+            className="flex flex-wrap justify-center gap-10 p-1 m-2 text-white md:p-5 md:m-5"
             key={movie.id}
             posterPath={movie?.poster_path}
             id={movie.id}
+            rating={movie.vote_average.toFixed(1)}
+            trimmedTitle={
+              movie.title.length > 10
+                ? movie.title.slice(0, 15) + "..."
+                : movie.title
+            }
+            release_date={movie.release_date}
           />
         ))}
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error.message}</p>}
       </div>
-    </>
+    </div>
   );
 };
 
