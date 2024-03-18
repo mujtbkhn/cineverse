@@ -6,11 +6,9 @@ import React, {
   useState,
 } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { IMG_CDN, OPTIONS } from "../utils/constants";
+import { IMG_CDN, IMG_CDN_ORG, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
-import Accordion from "./Accordion";
 import useDebounce from "../hooks/useDebounce";
-import Header from "./Header";
 
 const MovieDetails = () => {
   const { movieId } = useParams();
@@ -27,6 +25,9 @@ const MovieDetails = () => {
   const [personSuggestions, setPersonSuggestions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchPerson, setSearchPerson] = useState("");
+  const [trailerVideo, setTrailerVideo] = useState("");
+  const [director, setDirector] = useState("");
+  const [actor, setActor] = useState("");
 
   const searchText = useRef();
   const navigate = useNavigate();
@@ -40,6 +41,8 @@ const MovieDetails = () => {
     fetchReviews();
     fetchSimilarMovies();
     fetchCast();
+    getMovieVideos();
+    fetchDirector();
 
     try {
       const favoritesFromStorage = JSON.parse(
@@ -78,19 +81,18 @@ const MovieDetails = () => {
 
       const url = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchTerm}&include_adult=false&language=en-US&page=1`;
       fetch(url, OPTIONS)
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-        setSuggestions(json);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    
+        .then((res) => res.json())
+        .then((json) => {
+          // console.log(json);
+          setSuggestions(json);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     };
     fetchUsers();
   }, [debouncedSearchTerm]);
-  
+
   useEffect(() => {
     const searchPersons = () => {
       if (searchPerson.trim() === "") {
@@ -100,36 +102,17 @@ const MovieDetails = () => {
 
       const url = `https://api.themoviedb.org/3/search/person?query=${searchPerson}&include_adult=false&language=en-US&page=1`;
       fetch(url, OPTIONS)
-      .then((res) => res.json())
-      .then((json) => {
-        console.log(json);
-        setPersonSuggestions(json);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    
+        .then((res) => res.json())
+        .then((json) => {
+          // console.log(json);
+          setPersonSuggestions(json);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     };
     searchPersons();
   }, [searchPerson]);
-
-  // const handleSearch = useCallback(() => {
-  //   const url = `https://api.themoviedb.org/3/search/movie?query=${searchText.current.value}&include_adult=false&language=en-US&page=1`;
-  //   fetch(url, OPTIONS)
-  //     .then((res) => res.json())
-  //     .then((json) => {
-  //       if (json && json.results && json.results.length > 0) {
-  //         // console.log(json.results);
-  //         const movieId = json.results[0]?.id;
-  //         // Redirect to the MovieDetails page with the correct movieId
-  //         navigate(`/movieDetails/${movieId}`);
-  //       } else {
-  //         console.log("No movie found");
-  //         // Optionally, you can provide feedback to the user
-  //       }
-  //     })
-  //     .catch((err) => console.error("error:" + err));
-  // }, [navigate]);
 
   const fetchMovies = async () => {
     const data = await fetch(
@@ -141,6 +124,22 @@ const MovieDetails = () => {
     // console.log(json);
   };
 
+  const getMovieVideos = async () => {
+    const data = await fetch(
+      "https://api.themoviedb.org/3/movie/" +
+        movieId +
+        "/videos?language=en-US",
+      OPTIONS
+    );
+    const json = await data.json();
+    const filteredData = json.results.filter(
+      (video) => video.type === "Trailer"
+    );
+    const trailer = filteredData.length ? filteredData[0] : json.results[0];
+    // console.log(trailer);
+    setTrailerVideo(trailer);
+  };
+
   const fetchDetails = async () => {
     const data = await fetch(
       `https://api.themoviedb.org/3/movie/${movieId}`,
@@ -150,6 +149,7 @@ const MovieDetails = () => {
     // console.log(json);
     setDetails(json);
   };
+
   const fetchImages = async () => {
     const data = await fetch(
       `https://api.themoviedb.org/3/movie/${movieId}/images`,
@@ -157,7 +157,7 @@ const MovieDetails = () => {
     );
     const json = await data.json();
     // console.log(json);
-    setImages(json.backdrops.slice(0, 7));
+    setImages(json.backdrops);
   };
   const fetchReviews = async () => {
     const data = await fetch(
@@ -185,6 +185,24 @@ const MovieDetails = () => {
     const json = await data.json();
     // console.log(json.cast);
     setCast(json.cast);
+  };
+  const fetchDirector = async () => {
+    const data = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/credits`,
+      OPTIONS
+    );
+    const json = await data.json();
+    // console.log(json);
+
+    const director = json.crew.find((member) => member.job === "Director");
+    const actor = json.cast.slice(0, 3);
+
+    const actorName = actor.map((actor) => actor.name);
+    setActor(actorName);
+    console.log(actorName);
+    if (director) {
+      setDirector(director.name);
+    }
   };
 
   const fetchPerson = async (personName) => {
@@ -289,17 +307,8 @@ const MovieDetails = () => {
             placeholder="Enter Movie Name"
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          {/* <button
-            onClick={() => {
-              handleSearch();
-            }}
-            className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5"
-          >
-            Search
-          </button> */}
           <ul className="absolute flex flex-wrap text-black bg-gray-200 top-20 w-[800px] mt-6 my-auto">
             {suggestions?.results?.map((movie) => {
-              // const movieTitle = movie.title.slice(0, 25) + "...";
               if (movie.poster_path) {
                 return (
                   <li key={movie.id} className="text-black">
@@ -369,91 +378,114 @@ const MovieDetails = () => {
           </button>
         </div>
       </div>
-      <div className="justify-center md:flex-col md:flex ">
-        <div className="p-5 mr-10 md:mr-0 md:p-10 md:flex">
-          <div className="justify-center md:flex">
+      <div className="justify-center px-48 md:flex-col md:flex">
+        <div className="flex m-5">
+          <div className="flex flex-col w-full">
+            {/* <h1 className="text-2xl font-bold">
+              {movieDetails?.title}
+            </h1> */}
             <img
-              className="object-contain w-screen m-5 h-3/4"
-              src={IMG_CDN + movieDetails?.poster_path}
+              className=""
+              src={IMG_CDN_ORG + movieDetails?.poster_path}
               alt={movieDetails?.title}
             />
           </div>
-          <div className="flex flex-col gap-2 m-4 md:m-10">
-            <h1 className="justify-center text-2xl font-bold">
-              {movieDetails?.title}
-            </h1>
-            <h1 className="text-xl italic font-semibold">{details?.tagline}</h1>
+          <div className="flex flex-col w-full gap-2 m-4 md:m-10">
+            {/* <h1 className="text-xl italic font-semibold">{details?.tagline}</h1> */}
 
-            <h3>{movieDetails?.overview}</h3>
-            <div className="flex flex-row justify-center gap-10 m-1 font-bold">
-              {details && details.genres.map((genre) => <h3>{genre.name}</h3>)}
-            </div>
-            <h2>
-              Release Date:{" "}
-              <div className="inline font-bold">
-                {movieDetails?.release_date}
-              </div>
-            </h2>
-            <div className="flex justify-start gap-10">
-              <h2>Rating: {movieDetails?.vote_average}</h2>
-              <h2>Runtime: {details?.runtime}min</h2>
-            </div>
-            <h2 className="p-2 text-3xl ">Cast: </h2>
-            <div className="flex flex-wrap justify-center gap-10 ">
-              {cast
-                ?.map((cast) => (
-                  <div className="flex flex-col flex-wrap" key={cast.id}>
-                    <Link to={personId ? `/person/${personId}` : "#"}>
-                      {cast.profile_path ? (
-                        <img
-                          onClick={() => fetchPerson(cast?.original_name)}
-                          className="w-20 md:w-28"
-                          src={IMG_CDN + cast?.profile_path}
-                        />
-                      ) : null}
-                    </Link>
-                    <h1 className="font-bold">
-                      {window.innerWidth < 768
-                        ? cast?.original_name.slice(0, 10) + "..."
-                        : cast?.original_name.slice(0, 15) + "..."}
-                    </h1>
-                    <h2>
-                      {window.innerWidth < 768
-                        ? cast?.character.slice(0, 10) + "..."
-                        : cast?.character.slice(0, 15) + "..."}
-                    </h2>
-                  </div>
-                ))
-                .slice(0, 8)}
-            </div>
-            <div className="flex flex-col items-center justify-between mx-auto md:flex-row">
-              <button
-                onClick={() => {
-                  addToFavorite();
-                }}
-                className="flex justify-around mx-auto text-4xl md:justify-center w-96"
-              >
-                {fav ? "❤️" : "♡"}
-              </button>
-              <button
-                onClick={() => {
-                  addToWatchList();
-                }}
-                className="flex justify-center px-8 py-2 m-5 mx-auto font-semibold text-white bg-red-700 rounded-md w-52"
-              >
-                {watchList ? "Added to watchList" : "Add to watchList"}
-              </button>
-            </div>
+            <iframe
+              className=" aspect-video"
+              src={
+                "https://www.youtube.com/embed/" + trailerVideo?.key
+                // " + ?&autoplay=1&mute=1"
+              }
+              title="YouTube video player"
+              allow="accelerometer; autoplay;clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            ></iframe>
           </div>
         </div>
-        <div></div>
-        <div className="flex flex-wrap justify-center gap-10 pb-5">
+        <div>
+          <h3>Overview: {movieDetails?.overview}</h3>
+          <div className="flex flex-row justify-center gap-10 m-1 font-bold">
+            Genre:{" "}
+            <div className="flex gap-20">
+              {" "}
+              {details &&
+                details.genres.map((genre) => (
+                  <div className="flex justify-center w-48 h-10 bg-black opacity-40 rounded-2xl">
+                    {" "}
+                    <h3>{genre.name}</h3>
+                  </div>
+                ))}
+            </div>
+          </div>
+          <div className="flex">director: {director}</div>
+          <div className="flex">Stars: {actor}</div>
+          <h2>
+            Release Date:{" "}
+            <div className="inline font-bold">{movieDetails?.release_date}</div>
+          </h2>
+          <div className="flex justify-start gap-10">
+            <h2>Rating: {movieDetails?.vote_average}</h2>
+            <h2>Runtime: {details?.runtime}min</h2>
+          </div>
+
+          <div className="flex flex-col items-center justify-between mx-auto md:flex-row">
+            <button
+              onClick={() => {
+                addToFavorite();
+              }}
+              className="flex justify-around mx-auto text-4xl md:justify-center w-96"
+            >
+              {fav ? "❤️" : "♡"}
+            </button>
+            <button
+              onClick={() => {
+                addToWatchList();
+              }}
+              className="flex justify-center px-8 py-2 m-5 mx-auto font-semibold text-white bg-red-700 rounded-md w-52"
+            >
+              {watchList ? "Added to watchList" : "Add to watchList"}
+            </button>
+          </div>
+        </div>
+        {/* <div></div> */}
+        <h2 className="text-3xl ">Photos: </h2>
+        <div className="flex h-40 gap-2 overflow-x-scroll scrollbar-hide">
           {images.map((image) => (
             <img
-              className="flex flex-col object-contain w-96"
-              src={IMG_CDN + image?.file_path}
+              className="flex rounded-md"
+              src={IMG_CDN_ORG + image?.file_path}
             />
           ))}
+        </div>
+        <h2 className="text-3xl ">Cast: </h2>
+        <div className="flex flex-wrap justify-center gap-10 ">
+          {cast
+            ?.map((cast) => (
+              <div className="flex flex-col flex-wrap" key={cast.id}>
+                <Link to={personId ? `/person/${personId}` : "#"}>
+                  {cast.profile_path ? (
+                    <img
+                      onClick={() => fetchPerson(cast?.original_name)}
+                      className="object-cover w-20 rounded-md h-36 md:w-32"
+                      src={IMG_CDN + cast?.profile_path}
+                    />
+                  ) : null}
+                </Link>
+                <h1 className="font-bold">
+                  {window.innerWidth < 768
+                    ? cast?.original_name.slice(0, 10) + "..."
+                    : cast?.original_name.slice(0, 15) + "..."}
+                </h1>
+                <h2>
+                  {window.innerWidth < 768
+                    ? cast?.character.slice(0, 10) + "..."
+                    : cast?.character.slice(0, 15) + "..."}
+                </h2>
+              </div>
+            ))
+            .slice(0, 8)}
         </div>
         <h1 className="p-4 text-3xl font-bold ">Similar Movies:</h1>
         <div className="flex flex-wrap justify-center gap-10 md:flex-row md:justify-center ">

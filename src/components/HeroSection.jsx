@@ -10,7 +10,7 @@ const HeroSection = () => {
   const fetchMovies = async () => {
     try {
       const data = await fetch(
-        `https://api.themoviedb.org/3/discover/movie?page=1`,
+        `https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1`,
         OPTIONS
       );
       const json = await data.json();
@@ -18,7 +18,7 @@ const HeroSection = () => {
     const randomIndex = Math.floor(Math.random() * 20)
     const randomMovie = json?.results?.[randomIndex]
       setMovies(randomMovie);
-      console.log(randomMovie);
+      // console.log(randomMovie);
     } catch (error) {
       console.log("error occurred while fetching: ", error);
     }

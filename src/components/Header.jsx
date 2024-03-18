@@ -8,6 +8,7 @@ import {
   OPTIONS,
   search_img,
   SUPPORTED_LANGUAGES,
+  USER_AVATAR,
 } from "../utils/constants";
 import { toggleGptSearchView } from "../utils/gptSlice";
 import { changeLanguage } from "../utils/configSlice";
@@ -67,24 +68,19 @@ const Header = ({ enableAuthentication = true }) => {
   return (
     <div className="absolute z-10 w-full px-8 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-1 ">
       <div className="justify-between my-auto md:flex">
-      <Link to={"/browse"}>  <img className="object-contain w-20 md:mx-0" src={LOGO} alt="logo" /></Link>
-
-        {user && (
-          <div className="flex justify-center pt-5 mr-24 text-center align-middle">
-            <Link to={"/exploreMovies"}>
-              {" "}
-              <div className="text-xl text-white hover:text-red-700">Movies</div>
-            </Link>
-            <img
-              className="mx-4 w-7 h-7"
-              src={search_img}
-              alt={"search for movies"}
-            />
-            <div className="absolute left-0 right-0 flex-col justify-center hidden w-3/4 mx-auto top-20">
+        <Link to={"/browse"}>
+          {" "}
+          <img
+            className="w-28 md:mx-0 "
+            src="https://www.cineverse.com/images/cineverse/cineverse.svg?imwidth=256"
+            alt="logo"
+          />
+        </Link>
+        <div className="">
               <input
                 ref={searchText}
                 value={searchTerm}
-                className="relative px-5 py-5 border-2 rounded-md"
+                className="relative flex justify-center flex-grow-0 px-10 py-2 rounded-md active:border-none"
                 type="text"
                 placeholder="Enter Movie Name"
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -109,11 +105,21 @@ const Header = ({ enableAuthentication = true }) => {
                 })}
               </ul>
             </div>
+
+        {user && (
+          <div className="flex justify-center gap-10 pt-5 mr-24 text-center align-middle">
+            <Link to={"/exploreMovies"}>
+              {" "}
+              <div className="text-xl text-white hover:text-red-700">
+                Movies
+              </div>
+            </Link>
+            
             <span className="group ">
               <img
                 className="relative w-10 h-10 rounded-full"
                 alt="icon"
-                src={user.photoURL}
+                src={USER_AVATAR}
               />
 
               <div className="absolute flex-col hidden px-8 py-5 bg-gray-200 rounded-md right-10 top-20 group-hover:flex ">
