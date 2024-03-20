@@ -1,0 +1,12 @@
+@media (max-width: 640px) { /* Example breakpoint for small screens */
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  
+    .user-avatar {
+      display: inline-block; /* Ensure the avatar stays in line */
+    }
+  }
+  

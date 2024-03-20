@@ -23,6 +23,7 @@ const Browse = () => {
         <Header />
         {showGptSearch ? (
           <GPTSearch />
+          
         ) : (
           <>
             {" "}
