@@ -50,10 +50,10 @@ const ExploreMovies = () => {
 
   return (
     <div className="bg-[#04152D] text-white ">
-      <div>
+      <div className="flex pb-14">
         <Header enableAuthentication={false} />
       </div>
-      <div className="flex justify-center text-3xl align-middle">
+      <div className="py-5 ml-10 text-3xl align-middle ">
         Explore Movies From TMDB API
       </div>
       <div className="flex flex-wrap justify-center gap-10 md:flex-row md:justify-center ">
@@ -65,7 +65,11 @@ const ExploreMovies = () => {
             id={movie.id}
             rating={movie.vote_average.toFixed(1)}
             trimmedTitle={
-              movie.title.length > 10
+              window.innerWidth < 768
+                ? movie.title.length > 5
+                  ? movie.title.slice(0, 6) + "..."
+                  : movie.title
+                : movie.title.length > 10
                 ? movie.title.slice(0, 15) + "..."
                 : movie.title
             }

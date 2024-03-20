@@ -33,19 +33,12 @@ const Favorite = () => {
   };
   return (
     <div className="bg-[#04152D] text-white">
-      <Header enableAuthentication={false} />
-
-      <div className="flex justify-center">
-        <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
-          <Link to={"/favorite"}> Favorites</Link>
-        </button>
-        <button className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5">
-          <Link to={"/watchlist"}> WatchList</Link>
-        </button>
+      <div className="flex pb-14">
+        <Header enableAuthentication={false} />
       </div>
       <div className="flex flex-wrap justify-center gap-10 p-10">
         {favorite.map((movie) => (
-          <div>
+          <div className="flex flex-col">
             {/* <h1>{movie?.original_title}</h1> */}
             <MovieCard
               className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
@@ -54,13 +47,20 @@ const Favorite = () => {
               id={movie.id}
               rating={movie.vote_average.toFixed(1)}
               trimmedTitle={
-                movie.title.length > 10
+                window.innerWidth < 768
+                  ? movie.title.length > 5
+                    ? movie.title.slice(0, 6) + "..."
+                    : movie.title
+                  : movie.title.length > 10
                   ? movie.title.slice(0, 15) + "..."
                   : movie.title
               }
               release_date={movie.release_date}
             />
-            <button onClick={() => removeFromFavorite(movie.id)}>Remove</button>
+            <div className="flex justify-center">
+              
+            <button className="px-5 pt-2 bg-red-700 rounded-md " onClick={() => removeFromFavorite(movie.id)}>Remove</button>
+            </div>
           </div>
         ))}
       </div>

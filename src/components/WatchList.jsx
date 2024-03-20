@@ -31,17 +31,11 @@ const WatchList = () => {
     localStorage.setItem("WatchList", JSON.stringify(updatedWatchList));
   };
   return (
-    <div className="bg-[#04152D] text-white">
-      {/* <Header enableAuthentication={false} /> */}
-
-      <div className="flex justify-center">
-        <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
-          <Link to={"/favorite"}> Favorites</Link>
-        </button>
-        <button className="px-2 py-2 m-2 text-white bg-black rounded-md md:px-5">
-          <Link to={"/watchlist"}> WatchList</Link>
-        </button>
+    <div className="bg-[#04152D] text-white pt-5">
+      <div className="flex pb-14">
+        <Header enableAuthentication={false} />
       </div>
+
       <div className="flex flex-wrap justify-center gap-10 p-10">
         {watchList.map((movie) => (
           <div>
@@ -53,13 +47,20 @@ const WatchList = () => {
               id={movie?.id}
               rating={movie?.vote_average.toFixed(1)}
               trimmedTitle={
-                movie?.title.length > 10
-                  ? movie?.title.slice(0, 15) + "..."
-                  : movie?.title
+                window.innerWidth < 768
+                  ? movie.title.length > 5
+                    ? movie.title.slice(0, 6) + "..."
+                    : movie.title
+                  : movie.title.length > 10
+                  ? movie.title.slice(0, 15) + "..."
+                  : movie.title
               }
               release_date={movie?.release_date}
             />
-            <button onClick={() => removeFromWatchList(movie?.id)}>
+            <button
+              className="px-5 pt-2 bg-red-700 rounded-md "
+              onClick={() => removeFromWatchList(movie?.id)}
+            >
               watched?
             </button>
           </div>

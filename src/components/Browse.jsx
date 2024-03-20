@@ -8,6 +8,7 @@ import useTopRatedMovies from "../hooks/useTopRatedMovies";
 import useUpcomingMovies from "../hooks/useUpcomingMovies";
 import GPTSearch from "./GPTSearch";
 import { useSelector } from "react-redux";
+import Footer from "./Footer";
 
 const Browse = () => {
   //these are called to update the store so whenever i fetch from SecondaryContainer i get the updated movies lists
@@ -29,6 +30,7 @@ const Browse = () => {
             <SecondaryContainer />{" "}
           </>
         )}
+        <Footer />
       </div>
   );
 };

@@ -127,40 +127,20 @@ const MovieCard = ({ id, posterPath, rating, trimmedTitle, release_date }) => {
       <span>
         <button
           onClick={() => {
-            addToFavorite();
-          }}
-          className="flex justify-around mx-auto text-4xl md:justify-center w-96"
-        >
-          {fav ? (
-            <img
-              className="absolute z-20 w-10"
-              src={favo}
-              alt="favorite icon"
-            />
-          ) : (
-            <img
-              className="absolute z-20 w-10 opacity-80"
-              src="https://img.icons8.com/ios-filled/50/FFFFFF/heart-plus.png"
-              alt="Add to favorites"
-            />
-          )}
-        </button>
-        <button
-          onClick={() => {
             addToWatchList();
           }}
           className="flex justify-around mx-auto text-4xl md:justify-center w-96"
         >
           {watchList ? (
             <img
-              className="absolute z-20 left-1 opacity-80"
-              src="https://img.icons8.com/ios-filled/50/FFFFFF/remove-bookmark.png"
+              className="absolute left-0 z-20 opacity-80"
+              src="https://img.icons8.com/fluency/48/bookmark-ribbon.png"
               alt="bookmark icon"
             />
           ) : (
             <img
-              className="absolute z-20 left-1 opacity-80"
-              src="https://img.icons8.com/ios-filled/50/FFFFFF/add-bookmark.png"
+              className="absolute left-0 z-20 opacity-80"
+              src="https://img.icons8.com/fluency/48/add-bookmark.png"
               alt="add-bookmark"
             />
           )}
@@ -172,24 +152,31 @@ const MovieCard = ({ id, posterPath, rating, trimmedTitle, release_date }) => {
           className="relative rounded-md"
           src={IMG_CDN + posterPath}
         />
-        <div className="absolute left-0 z-20 -mt-8">
-          <CircleRating rating={rating} />
+        <div className="absolute left-0 z-20 -mt-12">
+          {/* <CircleRating rating={rating} /> */}
         </div>
-        
       </Link>
-        <div className="flex justify-between">
-          <h2 className="mt-5 text-xl">{trimmedTitle}</h2>
-          <span className=" group">
-            <img
-              className="w-10 "
-              src="https://img.icons8.com/ios/50/737373/star--v1.png"
-            />
-            <div className="absolute hidden left-10 group-hover:flex bottom-10">
-              {" "}
-              <Rating />
-            </div>
-          </span>
+      <h2 className="mt-1 text-xl">{trimmedTitle}</h2>
+      <div className="flex justify-between mt-2">
+        <div className="flex">
+          <img
+            className="object-contain w-6 "
+            src="https://img.icons8.com/fluency/48/star--v1.png"
+            alt="star--v1"
+          />
+          <h2 className="text-xl">{rating}</h2>
         </div>
+        <span className=" group">
+          <img
+            className="w-7"
+            src="https://img.icons8.com/ios/50/737373/star--v1.png"
+          />
+          <div className="absolute hidden left-10 group-hover:flex bottom-3">
+            {" "}
+            <Rating />
+          </div>
+        </span>
+      </div>
     </div>
   );
 };
