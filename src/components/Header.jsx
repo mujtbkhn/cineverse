@@ -97,7 +97,7 @@ const Header = ({ enableAuthentication = true }) => {
                 placeholder="Search Movie or Person"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <ul className="absolute z-50 flex flex-wrap pl-10 mt-6 overflow-y-scroll text-white bg-black left-5 right-5 md:mr-0 md:w-1/2 top-18">
+              <ul className="absolute z-50 flex flex-wrap pl-10 mt-6 overflow-y-scroll text-white bg-black left-5 right-5 md:left-0 md:right-0 md:mr-0 md:w-1/2 top-18">
                 {suggestions.map((result) => {
                   if (result.media_type === "movie" && result.poster_path) {
                     return (
