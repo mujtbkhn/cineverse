@@ -12,7 +12,7 @@ import useDebounce from "../hooks/useDebounce";
 import Header from "./Header";
 import Rating from "./rating";
 import "react-toastify/dist/ReactToastify.css";
-import ImageAmbilight from "../utils/Ambilight/ImageAmbilight";
+import ImageAmbilight from "../utils/Ambilight/ImageAmbilight"
 import "./Test.css"
 
 const MovieDetails = () => {
