@@ -12,8 +12,8 @@ import useDebounce from "../hooks/useDebounce";
 import Header from "./Header";
 import Rating from "./rating";
 import "react-toastify/dist/ReactToastify.css";
-import ImageAmbilight from "../utils/Ambilight/ImageAmbilight"
 import "./Test.css"
+import ImageAmbilight from "../utils/ImageAmbilight";
 
 const MovieDetails = () => {
   const { movieId } = useParams();
