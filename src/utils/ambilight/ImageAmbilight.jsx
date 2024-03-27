@@ -13,26 +13,25 @@ const ImageAmbilight = ({ imageSrc }) => {
     const imageElement = imageRef.current;
 
     function repaintAmbilight() {
-        const { width, height } = imageElement;
-        context.drawImage(imageElement, 0, 0, width, height);
-        const imageData = context.getImageData(0, 0, width, height);
+      const { width, height } = imageElement;
+      context.drawImage(imageElement, 0, 0, width, height);
+      const imageData = context.getImageData(0, 0, width, height);
+      
+      // Manipulate the image data to create an ambilight effect
+      const data = imageData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        // Extract RGB values
+        const red = data[i];
+        const green = data[i + 1];
+        const blue = data[i + 2];
         
-        // Manipulate the image data to create an ambilight effect
-        const data = imageData.data;
-        for (let i = 0; i < data.length; i += 4) {
-          // Extract RGB values
-          const red = data[i];
-          const green = data[i + 1];
-          const blue = data[i + 2];
-          
-          // Example: Increase the red and blue values to create a reddish-blue ambilight effect
-          data[i] = Math.min(red + 50, 255); // Increase red
-          data[i + 2] = Math.min(blue + 50, 255); // Increase blue
-        }
-        
-        context.putImageData(imageData, 0, 0);
+        // Example: Increase the red and blue values to create a reddish-blue ambilight effect
+        data[i] = Math.min(red + 50, 255); // Increase red
+        data[i + 2] = Math.min(blue + 50, 255); // Increase blue
       }
-          
+      
+      context.putImageData(imageData, 0, 0);
+    }
 
     function startAmbilightRepaint() {
       intervalId = window.setInterval(repaintAmbilight, 1000 / 30);
@@ -42,7 +41,13 @@ const ImageAmbilight = ({ imageSrc }) => {
       clearInterval(intervalId);
     }
 
-    repaintAmbilight();
+    if (imageElement.complete) {
+      // If the image is already loaded, repaint ambilight immediately
+      repaintAmbilight();
+    } else {
+      // If the image is not loaded yet, wait for the onload event
+      imageElement.onload = repaintAmbilight;
+    }
 
     return () => {
       stopAmbilightRepaint();

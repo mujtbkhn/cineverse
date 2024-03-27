@@ -1,32 +1,25 @@
 .videoWrapper {
     width: 100%;
     max-width: 720px;
-    margin: 0 auto;
+    margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .ambilightWrapper {
-    width: 100%;
-    height: 100%;
+}
+
+.ambilightWrapper {
+    width: 60%;
+    height: 60%;
     position: relative;
-  }
-  
-  #video {
+}
+#image{
     width: 100%;
     height: 100%;
     border-radius: 8px;
-    aspect-ratio: 16 / 9;
-  }
-  #image{
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    aspect-ratio: 16/9;
-  }
-  
-  #ambilight {
+    /* aspect-ratio: 16/9; */
+}
+
+#ambilight {
     filter: blur(80px) opacity(0.5) saturate(300%);
     left: 0;
     pointer-events: none;
@@ -36,4 +29,4 @@
     width: 100%;
     z-index: -1;
     height: 100%;
-  }
+}

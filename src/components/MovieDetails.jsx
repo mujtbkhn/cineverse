@@ -11,8 +11,9 @@ import MovieCard from "./MovieCard";
 import useDebounce from "../hooks/useDebounce";
 import Header from "./Header";
 import Rating from "./rating";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ImageAmbilight from "../utils/Ambilight/ImageAmbilight";
+import "./Test.css"
 
 const MovieDetails = () => {
   const { movieId } = useParams();
@@ -106,7 +107,7 @@ const MovieDetails = () => {
     );
     const json = await data.json();
     setMovieDetails(json);
-    // console.log(json);
+    console.log(json);
   };
 
   const getMovieVideos = async () => {
@@ -317,14 +318,18 @@ const MovieDetails = () => {
     return date.toLocaleDateString("en-US", options);
   };
 
+  const imgUrl = IMG_CDN_ORG + movieDetails?.poster_path;
+
   return (
-    <div className="bg-[#04152D] w-full text-white font-roboto">
+    <div className="w-full text-white font-roboto">
       <div className="flex pb-40 md:pt-4 md:pb-14">
         <Header enableAuthentication={false} />
       </div>
       <div className="flex flex-col px-18 md:px-48">
         <div>
-          <h1 className="text-xl font-semibold md:text-3xl">{movieDetails?.title}</h1>
+          <h1 className="text-xl font-semibold md:text-3xl">
+            {movieDetails?.title}
+          </h1>
         </div>
         <div className="flex items-center justify-between mx-10 md:gap-10 ">
           <div className="flex gap-6">
@@ -366,13 +371,13 @@ const MovieDetails = () => {
       </div>
       <div className="justify-center mt-10 md:px-48 md:flex-col md:flex">
         <div className="flex flex-col gap-5 mx-auto md:gap-10 w-60 md:w-full md:flex-row">
-          <img
+          {/* <img
             className="md:object-contain md:w-96"
             src={IMG_CDN_ORG + movieDetails?.poster_path}
             alt={movieDetails?.title}
-          />
-          {/* <h1 className="text-xl italic font-semibold">{details?.tagline}</h1> */}
+          /> */}
 
+          <ImageAmbilight imageSrc={imgUrl} crossorigin="anonymous"/>
           <iframe
             className="w-full aspect-video"
             src={
@@ -410,7 +415,6 @@ const MovieDetails = () => {
             >
               {watchList ? "Added to watchList" : "Add to watchList"}
             </button>
-            
           </div>
           <div className="flex gap-10">
             <h2 className="md:text-xl md:w-52">Director</h2>
