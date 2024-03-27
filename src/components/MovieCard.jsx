@@ -171,7 +171,7 @@ const MovieCard = ({ id, posterPath, rating, trimmedTitle, release_date }) => {
             className="w-7"
             src="https://img.icons8.com/ios/50/737373/star--v1.png"
           />
-          <div className="absolute hidden left-10 group-hover:flex bottom-3">
+          <div className="absolute hidden left-10 group-hover:flex bottom-12">
             {" "}
             <Rating />
           </div>
