@@ -6,7 +6,6 @@ import { useEffect } from 'react'
 
 const useTopRatedMovies = () => {
 
-    //Fetching TMDB API and updating the store
     const dispatch = useDispatch()
 
     const topRatedMovies = useSelector((store) => store.topRatedMovies);

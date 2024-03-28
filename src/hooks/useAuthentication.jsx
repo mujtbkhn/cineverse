@@ -5,17 +5,15 @@ import { auth } from "../utils/firebase.config";
 import { addUser, removeUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 
-// Custom hook for authentication logic
 const useAuthentication = (enableAuthentication = true) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!enableAuthentication) return; // Skip authentication logic if not enabled
+    if (!enableAuthentication) return; 
 
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, see docs for a list of available properties
         const { uid, email, displayName, photoURL } = user;
         dispatch(
           addUser({
@@ -32,7 +30,7 @@ const useAuthentication = (enableAuthentication = true) => {
       }
     });
 
-    return () => unsubscribe(); //for unsubscribing the store because after every render onAuthStateChanged is adding a listener to our component
+    return () => unsubscribe(); 
   }, [dispatch, navigate, enableAuthentication]);
 };
 

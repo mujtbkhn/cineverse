@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import { auth } from "../utils/firebase.config";
+import { auth } from "../../utils/firebase.config";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
-import "./style.css";
 import {
   IMG_CDN_ORG,
   LOGO,
@@ -11,12 +10,12 @@ import {
   search_img,
   SUPPORTED_LANGUAGES,
   USER_AVATAR,
-} from "../utils/constants";
-import { toggleGptSearchView } from "../utils/gptSlice";
-import { changeLanguage } from "../utils/configSlice";
-import useDebounce from "../hooks/useDebounce";
-import MovieCard from "./MovieCard";
-import useAuthentication from "../hooks/useAuthentication";
+} from "../../utils/constants";
+import { toggleGptSearchView } from "../../utils/gptSlice";
+import { changeLanguage } from "../../utils/configSlice";
+import useDebounce from "../../hooks/useDebounce";
+import MovieCard from "../MovieCard";
+import useAuthentication from "../../hooks/useAuthentication";
 
 const Header = ({ enableAuthentication = true }) => {
   const [suggestions, setSuggestions] = useState([]);

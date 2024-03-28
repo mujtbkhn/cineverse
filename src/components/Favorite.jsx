@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
 import { Link } from "react-router-dom";
-import Header from "./Header";
+import Header from "./MainContainer/Header";
 
 const Favorite = () => {
   const [favorite, setFavorite] = useState([]);

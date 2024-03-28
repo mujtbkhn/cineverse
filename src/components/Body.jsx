@@ -1,13 +1,12 @@
-import Login from "./Login";
 import Browse from "./Browse";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import WatchList from "./WatchList";
 import Favorite from "./Favorite";
 import { Suspense, lazy } from "react";
 import ExploreMovies from "./ExploreMovies";
-import Test from "./Test";
+import Login from "./MainContainer/Login";
 
-const MovieDetails = lazy(() => import("./MovieDetails"));
+const MovieDetails = lazy(() => import("./MovieDetails/MovieDetails"));
 const Person = lazy(() => import("./Person"));
 
 const Body = () => {
@@ -15,10 +14,6 @@ const Body = () => {
     {
       path: "/",
       element: <Login />,
-    },
-    {
-      path: "/test",
-      element: <Test />,
     },
     {
       path: "/browse",

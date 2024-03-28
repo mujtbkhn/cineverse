@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { IMG_CDN, OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
-import Header from "./Header";
+import Header from "./MainContainer/Header";
 
 const Person = () => {
   const [details, setDetails] = useState([]);

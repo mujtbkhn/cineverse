@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
-import Header from "./Header";
+import Header from "./MainContainer/Header";
 
 const ExploreMovies = () => {
   const [movies, setMovies] = useState([]);

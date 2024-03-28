@@ -6,14 +6,14 @@ import React, {
   useState,
 } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { IMG_CDN, IMG_CDN_ORG, OPTIONS } from "../utils/constants";
-import MovieCard from "./MovieCard";
-import useDebounce from "../hooks/useDebounce";
-import Header from "./Header";
-import Rating from "./rating";
+import { IMG_CDN, IMG_CDN_ORG, OPTIONS } from "../../utils/constants";
+import MovieCard from "../MovieCard";
+import useDebounce from "../../hooks/useDebounce";
+import Header from "../MainContainer/Header";
+import Rating from "../MainContainer/rating";
 import "react-toastify/dist/ReactToastify.css";
 import "./Test.css"
-import ImageAmbilight from "../utils/ImageAmbilight";
+import ImageAmbilight from "../../utils/ImageAmbilight";
 
 const MovieDetails = () => {
   const { movieId } = useParams();

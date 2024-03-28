@@ -2,14 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   IMG_CDN,
   OPTIONS,
-  addFav,
-  addInToWatchList,
-  favo,
-  removeFromWatchList,
 } from "../utils/constants";
 import { Link } from "react-router-dom";
-import CircleRating from "./circleRating/CircleRating";
-import Rating from "./rating";
+import Rating from "./MainContainer/rating";
 
 const MovieCard = ({ id, posterPath, rating, trimmedTitle, release_date }) => {
   const [details, setDetails] = useState(null);
@@ -153,7 +148,6 @@ const MovieCard = ({ id, posterPath, rating, trimmedTitle, release_date }) => {
           src={IMG_CDN + posterPath}
         />
         <div className="absolute left-0 z-20 -mt-12">
-          {/* <CircleRating rating={rating} /> */}
         </div>
       </Link>
       <h2 className="mt-1 text-xl">{trimmedTitle}</h2>

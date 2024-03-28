@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IMG_CDN, IMG_CDN_ORG, OPTIONS } from "../utils/constants";
+import { IMG_CDN, IMG_CDN_ORG, OPTIONS } from "../../utils/constants";
 
 const HeroSection = () => {
   const [movies, setMovies] = useState([]);
