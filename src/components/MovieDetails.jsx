@@ -322,17 +322,17 @@ const MovieDetails = () => {
 
   return (
     <div className="w-full text-white font-roboto">
-      <div className="flex pb-40 md:pt-4 md:pb-14">
+      <div className="flex pb-16 md:pt-4 md:pb-14">
         <Header enableAuthentication={false} />
       </div>
       <div className="flex flex-col px-18 md:px-48">
         <div>
-          <h1 className="text-xl font-semibold md:text-3xl">
+          <h1 className="my-8 text-3xl md:text-6xl">
             {movieDetails?.title}
           </h1>
         </div>
-        <div className="flex items-center justify-between mx-10 md:gap-10 ">
-          <div className="flex gap-6">
+        <div className="flex items-center justify-between mx-4 md:mx-10 md:gap-10 ">
+          <div className="flex md:gap-6">
             <h2 className="text-gray-300">
               {formatDate(movieDetails?.release_date)}
             </h2>
@@ -349,7 +349,7 @@ const MovieDetails = () => {
                       : "https://img.icons8.com/ios/50/737373/star--v1.png"
                   }
                 />
-                <div className="absolute hidden top-14 group-hover:flex bottom-10">
+                <div className="absolute hidden group-hover:flex top-32">
                   {" "}
                   <Rating onRatingChanged={handleRatingChanged} />
                 </div>
@@ -369,14 +369,8 @@ const MovieDetails = () => {
           </div>
         </div>
       </div>
-      <div className="justify-center mt-10 md:px-48 md:flex-col md:flex">
-        <div className="flex flex-col gap-5 mx-auto md:gap-10 w-60 md:w-full md:flex-row">
-          {/* <img
-            className="md:object-contain md:w-96"
-            src={IMG_CDN_ORG + movieDetails?.poster_path}
-            alt={movieDetails?.title}
-          /> */}
-
+      <div className="justify-center px-4 mt-10 md:px-44 md:flex-col md:flex">
+        <div className="flex flex-col gap-5 mx-auto md:gap-0 w-60 md:w-full md:flex-row">
           <ImageAmbilight imageSrc={imgUrl} crossorigin="anonymous"/>
           <iframe
             className="w-full aspect-video"
@@ -389,7 +383,7 @@ const MovieDetails = () => {
           ></iframe>
         </div>
         <div className="flex flex-col gap-10 my-10">
-          <div className="flex flex-col gap-10 mx-10 md:flex-row">
+          <div className="flex flex-col gap-10 md:flex-row">
             <h2 className="mx-auto md:text-xl w-18">Overview</h2>
             <h3 className="md:text-xl">{movieDetails?.overview}</h3>
           </div>
@@ -462,7 +456,7 @@ const MovieDetails = () => {
             ))
             .slice(0, 8)}
         </div>
-        <h1 className="p-5 text-3xl ">More like this</h1>
+        <h1 className="p-5 my-10 text-5xl ">More like this</h1>
         <div className="flex flex-wrap justify-center gap-10 md:flex-row md:justify-center ">
           {similar.map((movie) => (
             <MovieCard
