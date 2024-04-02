@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
-import { Link } from "react-router-dom";
 import Header from "./MainContainer/Header";
 
 const WatchList = () => {
@@ -21,7 +20,6 @@ const WatchList = () => {
       OPTIONS
     );
     const json = await data.json();
-    // console.log(json.results);
     setWatchList(json.results);
     localStorage.setItem("WatchList", JSON.stringify(json.results));
   };

@@ -27,20 +27,15 @@ const MovieDetails = () => {
   const [fav, setFav] = useState(false);
   const [watchList, setWatchList] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const [personSuggestions, setPersonSuggestions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchPerson, setSearchPerson] = useState("");
   const [trailerVideo, setTrailerVideo] = useState("");
   const [director, setDirector] = useState("");
   const [actor, setActor] = useState("");
   const [rating, setRating] = useState("");
   const [rate, setRate] = useState(false);
 
-  const searchText = useRef();
-  const navigate = useNavigate();
 
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
-  const debouncedSearchPerson = useDebounce(searchPerson, 700);
 
   useEffect(() => {
     fetchMovies();
@@ -228,82 +223,7 @@ const MovieDetails = () => {
       .catch((err) => console.error("error:" + err));
   };
 
-  const addToWatchList = useCallback(() => {
-    const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/watchlist`;
-    const options = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
-      },
-      body: JSON.stringify({
-        media_type: "movie",
-        media_id: details.id,
-        watchlist: true,
-      }),
-    };
-
-    fetch(url, options)
-      .then((res) => res.json())
-      .then((json) => {
-        // console.log(json);
-        setWatchList(true);
-
-        const existingWatchLists =
-          JSON.parse(localStorage.getItem("WatchList")) || [];
-        const updatedWatchLists = [...existingWatchLists, details];
-        localStorage.setItem("WatchList", JSON.stringify(updatedWatchLists));
-        setWatchList(true);
-      })
-      .catch((err) => console.error("error:" + err));
-  }, [details, setWatchList]);
-
-  const addToFavorite = useCallback(() => {
-    const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/favorite`;
-    const options = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
-      },
-      body: JSON.stringify({
-        media_type: "movie",
-        media_id: details.id,
-        favorite: true,
-      }),
-    };
-
-    fetch(url, options)
-      .then((res) => res.json())
-      .then((json) => {
-        // console.log(json);
-        setFav(true);
-
-        const existingFavorites =
-          JSON.parse(localStorage.getItem("favorites")) || [];
-        const updatedFavorites = [...existingFavorites, details];
-        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-        setFav(true);
-      })
-      .catch((err) => console.error("error:" + err));
-  }, [details, setFav]);
-
-  const items = useMemo(
-    () => [
-      {
-        title: "Author : ",
-        content: <div> {reviews?.results[0]?.author}</div>,
-      },
-      {
-        title: "Review : ",
-        content: <div> {reviews?.results[0]?.content}</div>,
-      },
-    ],
-    [reviews]
-  );
-
+  
   if (!movieDetails) return <div>Loading...</div>;
 
   const formatMinutes = (minutes) => {
