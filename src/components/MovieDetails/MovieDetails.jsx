@@ -12,8 +12,9 @@ import useDebounce from "../../hooks/useDebounce";
 import Header from "../MainContainer/Header";
 import Rating from "../MainContainer/rating";
 import "react-toastify/dist/ReactToastify.css";
-import "./Test.css"
+import "./Test.css";
 import ImageAmbilight from "../../utils/ImageAmbilight";
+import Photos from "./Photos";
 
 const MovieDetails = () => {
   const { movieId } = useParams();
@@ -33,7 +34,6 @@ const MovieDetails = () => {
   const [actor, setActor] = useState("");
   const [rating, setRating] = useState("");
   const [rate, setRate] = useState(false);
-
 
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
 
@@ -223,7 +223,6 @@ const MovieDetails = () => {
       .catch((err) => console.error("error:" + err));
   };
 
-  
   if (!movieDetails) return <div>Loading...</div>;
 
   const formatMinutes = (minutes) => {
@@ -247,9 +246,7 @@ const MovieDetails = () => {
       </div>
       <div className="flex flex-col px-18 md:px-48">
         <div>
-          <h1 className="my-8 text-3xl md:text-6xl">
-            {movieDetails?.title}
-          </h1>
+          <h1 className="my-8 text-3xl md:text-6xl">{movieDetails?.title}</h1>
         </div>
         <div className="flex items-center justify-between mx-4 md:mx-10 md:gap-10 ">
           <div className="flex md:gap-6">
@@ -291,7 +288,7 @@ const MovieDetails = () => {
       </div>
       <div className="justify-center px-4 mt-10 md:px-44 md:flex-col md:flex">
         <div className="flex flex-col gap-5 mx-auto md:gap-0 w-60 md:w-full md:flex-row">
-          <ImageAmbilight imageSrc={imgUrl} crossorigin="anonymous"/>
+          <ImageAmbilight imageSrc={imgUrl} crossorigin="anonymous" />
           <iframe
             className="w-full aspect-video"
             src={
@@ -339,7 +336,7 @@ const MovieDetails = () => {
             <h3 className="text-yellow-500 md:text-xl">{actor}</h3>
           </div>
         </div>
-        <h2 className="text-3xl ">Photos: </h2>
+        {/* <h2 className="text-3xl ">Photos: </h2>
         <div className="flex h-40 gap-2 overflow-x-scroll scrollbar-hide">
           {images.map((image) => (
             <img
@@ -347,7 +344,8 @@ const MovieDetails = () => {
               src={IMG_CDN_ORG + image?.file_path}
             />
           ))}
-        </div>
+        </div> */}
+        <Photos />
         <h2 className="text-3xl ">Cast: </h2>
         <div className="flex flex-wrap justify-center gap-10 ">
           {cast

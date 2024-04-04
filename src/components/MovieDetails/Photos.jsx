@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { IMG_CDN_ORG, OPTIONS } from "../utils/constants";
+import { IMG_CDN_ORG, OPTIONS } from "../../utils/constants";
+import { useParams } from "react-router-dom";
 
-const Test = () => {
+const Photos = () => {
+  const { movieId } = useParams();
+
   const [images, setImages] = useState([]);
-  const [bigImage, setBigImage] = useState("");
   const [bigImageIndex, setBigImageIndex] = useState(0);
   const [isImageClicked, setIsImageClicked] = useState(false);
   useEffect(() => {
@@ -11,7 +13,7 @@ const Test = () => {
   }, []);
   const fetchImages = async () => {
     const data = await fetch(
-      `https://api.themoviedb.org/3/movie/1011985/images`,
+      `https://api.themoviedb.org/3/movie/${movieId}/images`,
       OPTIONS
     );
     const json = await data.json();
@@ -74,33 +76,31 @@ const Test = () => {
         ))}
       </div>
       {isImageClicked && (
-        <div className="flex flex-col justify-between">
-          {/* <div> */}
-            <div className="flex justify-between px-8">
-              <img
-                src="https://img.icons8.com/pastel-glyph/64/circled-chevron-left.png"
-                onClick={handleImageBackward}
-                className="w-12 h-12"
-                alt=""
-              />
-              <img
-                className="w-[800px] mx-auto"
-                src={IMG_CDN_ORG + images[bigImageIndex]?.file_path}
-                alt=""
-              />
-              <img
-                src="https://img.icons8.com/pastel-glyph/64/circled-chevron-right.png"
-                onClick={handleImageForward}
-                alt=""
-                className="w-12 h-12"
-              />
-            </div>
-            <button onClick={() => setIsImageClicked(false)}>X</button>
-          {/* </div> */}
+        <div className="flex flex-col items-center w-72 md:w-[800px] md:mx-auto">
+          <div className="flex items-center justify-between w-full px-8">
+            <img
+              src="https://img.icons8.com/ios-filled/50/FFFFFF/chevron-left.png"
+              onClick={handleImageBackward}
+              className="w-12 h-12"
+              alt=""
+            />
+            <img
+              className="w-[800px] mx-auto"
+              src={IMG_CDN_ORG + images[bigImageIndex]?.file_path}
+              alt=""
+            />
+            <img
+              src="https://img.icons8.com/ios-filled/50/FFFFFF/chevron-right.png"
+              onClick={handleImageForward}
+              alt=""
+              className="w-12 h-12"
+            />
+          </div>
+          <button onClick={() => setIsImageClicked(false)}>X</button>
         </div>
       )}
     </div>
   );
 };
 
-export default Test;
+export default Photos;
