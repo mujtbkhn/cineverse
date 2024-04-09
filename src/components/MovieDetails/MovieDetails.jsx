@@ -205,6 +205,41 @@ const MovieDetails = () => {
     setRate(true);
   };
 
+  const addToWatchList = () => {
+    const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/watchlist`;
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
+      },
+      body: JSON.stringify({
+        media_type: "movie",
+        media_id: movieId,
+        watchlist: true,
+      }),
+    };
+
+    fetch(url, options)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to add to watchlist");
+        }
+        return res.json();
+      })
+      .then((json) => {
+        setWatchList(true);
+
+        const existingWatchLists =
+          JSON.parse(localStorage.getItem("WatchList")) || [];
+        const updatedWatchLists = [...existingWatchLists, details];
+        localStorage.setItem("WatchList", JSON.stringify(updatedWatchLists));
+        setWatchList(true);
+      })
+      .catch((err) => console.error("error:" + err));
+  };
+
   const addRating = (newRating) => {
     const url = `https://api.themoviedb.org/3/movie/${movieId}/rating`;
     const options = {
