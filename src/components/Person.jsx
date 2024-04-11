@@ -31,7 +31,7 @@ const Person = () => {
       OPTIONS
     );
     const json = await data.json();
-    // console.log(json);
+    console.log(json);
     setCredits(json.cast);
   };
 
@@ -65,7 +65,6 @@ const Person = () => {
             <p>Birthplace</p>
           <p className="font-bold text-yellow-500">{details.place_of_birth}</p>
           </div>
-          {/* <p className="text-xl">Birthday: {details.birthday}</p> */}
           <div className="flex gap-10 ">
             <p className="w-16">Age</p>
           <p className="font-bold text-yellow-500">{calculateAge(details.birthday)} Years old</p>

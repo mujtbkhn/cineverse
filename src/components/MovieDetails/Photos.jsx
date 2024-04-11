@@ -17,7 +17,7 @@ const Photos = () => {
       OPTIONS
     );
     const json = await data.json();
-    console.log(json);
+    // console.log(json);
     setImages(json.backdrops);
   };
   const handleForward = () => {

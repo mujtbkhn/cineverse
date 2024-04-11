@@ -102,7 +102,7 @@ const MovieDetails = () => {
     );
     const json = await data.json();
     setMovieDetails(json);
-    console.log(json);
+    // console.log(json);
   };
 
   const getMovieVideos = async () => {
