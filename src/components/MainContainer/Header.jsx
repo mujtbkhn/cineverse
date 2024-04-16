@@ -39,7 +39,7 @@ const Header = ({ enableAuthentication = true }) => {
         return;
       }
 
-      const url = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchTerm}&include_adult=false&language=en-US&page=1`;
+      const url = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchTerm}&include_adult=true&language=en-US&page=1`;
       fetch(url, OPTIONS)
         .then((res) => res.json())
         .then((json) => {
