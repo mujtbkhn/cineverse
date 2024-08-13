@@ -17,15 +17,12 @@ const ImageAmbilight = ({ imageSrc }) => {
       context.drawImage(imageElement, 0, 0, width, height);
       const imageData = context.getImageData(0, 0, width, height);
       
-      // Manipulate the image data to create an ambilight effect
       const data = imageData.data;
       for (let i = 0; i < data.length; i += 4) {
-        // Extract RGB values
         const red = data[i];
         const green = data[i + 1];
         const blue = data[i + 2];
         
-        // Example: Increase the red and blue values to create a reddish-blue ambilight effect
         data[i] = Math.min(red + 50, 255); // Increase red
         data[i + 2] = Math.min(blue + 50, 255); // Increase blue
       }
@@ -42,10 +39,8 @@ const ImageAmbilight = ({ imageSrc }) => {
     }
 
     if (imageElement.complete) {
-      // If the image is already loaded, repaint ambilight immediately
       repaintAmbilight();
     } else {
-      // If the image is not loaded yet, wait for the onload event
       imageElement.onload = repaintAmbilight;
     }
 
@@ -64,7 +59,6 @@ const ImageAmbilight = ({ imageSrc }) => {
     image.src = imageSrc;
 
     return () => {
-      // Revoke the image URL when component is unmounted
       URL.revokeObjectURL(image.src);
     };
   }, [imageSrc]);

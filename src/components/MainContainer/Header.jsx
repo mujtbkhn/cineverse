@@ -5,14 +5,10 @@ import { signOut } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import {
   IMG_CDN_ORG,
-  LOGO,
   OPTIONS,
-  search_img,
-  SUPPORTED_LANGUAGES,
   USER_AVATAR,
 } from "../../utils/constants";
 import { toggleGptSearchView } from "../../utils/gptSlice";
-import { changeLanguage } from "../../utils/configSlice";
 import useDebounce from "../../hooks/useDebounce";
 import MovieCard from "../MovieCard";
 import useAuthentication from "../../hooks/useAuthentication";
@@ -64,9 +60,6 @@ const Header = ({ enableAuthentication = true }) => {
     dispatch(toggleGptSearchView());
   };
 
-  const handleLangChange = (e) => {
-    dispatch(changeLanguage(e.target.value));
-  };
   const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   return (
     <div className="absolute z-50 w-full md:px-24 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-1">
@@ -157,21 +150,6 @@ const Header = ({ enableAuthentication = true }) => {
                         className="px-2 py-2 m-2 text-white bg-purple-600 rounded-md"
                         onClick={handleGPTSearchClick}
                       >
-                        {showGptSearch && (
-                          <select
-                            className="p-2 m-2 text-white bg-gray-900"
-                            onChange={handleLangChange}
-                          >
-                            {SUPPORTED_LANGUAGES.map((lang) => (
-                              <option
-                                key={lang.identifier}
-                                value={lang.identifier}
-                              >
-                                {lang.name}
-                              </option>
-                            ))}
-                          </select>
-                        )}
                         {showGptSearch ? "HomePage" : "GPT-Search"}
                       </button>
                       <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">
@@ -200,21 +178,6 @@ const Header = ({ enableAuthentication = true }) => {
                         className="px-2 py-2 m-2 text-white bg-purple-600 rounded-md"
                         onClick={handleGPTSearchClick}
                       >
-                        {showGptSearch && (
-                          <select
-                            className="p-2 m-2 text-white bg-gray-900"
-                            onChange={handleLangChange}
-                          >
-                            {SUPPORTED_LANGUAGES.map((lang) => (
-                              <option
-                                key={lang.identifier}
-                                value={lang.identifier}
-                              >
-                                {lang.name}
-                              </option>
-                            ))}
-                          </select>
-                        )}
                         {showGptSearch ? "HomePage" : "GPT-Search"}
                       </button>
                       <button className="px-2 py-2 m-2 text-white bg-red-700 rounded-md md:px-5">

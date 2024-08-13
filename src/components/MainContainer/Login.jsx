@@ -78,8 +78,6 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
 
-          // window.location.href = '/browse';
-          // ...
         })
         .catch((error) => {
           const errorCode = error.code;

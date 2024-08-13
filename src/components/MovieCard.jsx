@@ -46,41 +46,6 @@ const MovieCard = ({ id, posterPath, rating, trimmedTitle, release_date }) => {
     setDetails(json);
   };
 
-  const addToFavorite = () => {
-    const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/favorite`;
-    const options = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
-      },
-      body: JSON.stringify({
-        media_type: "movie",
-        media_id: id,
-        favorite: true,
-      }),
-    };
-
-    fetch(url, options)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to add to watchlist");
-        }
-        return res.json();
-      })
-      .then((json) => {
-        setFav(true);
-
-        const existingFavorites =
-          JSON.parse(localStorage.getItem("favorites")) || [];
-        const updatedFavorites = [...existingFavorites, details];
-        localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-        setFav(true);
-      })
-      .catch((err) => console.error("error:" + err));
-  };
-
   const addToWatchList = () => {
     const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/watchlist`;
     const options = {

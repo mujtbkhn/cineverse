@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IMG_CDN, IMG_CDN_ORG, OPTIONS } from "../../utils/constants";
+import { IMG_CDN_ORG, OPTIONS } from "../../utils/constants";
 
 const HeroSection = () => {
   const [movies, setMovies] = useState([]);
@@ -14,11 +14,9 @@ const HeroSection = () => {
         OPTIONS
       );
       const json = await data.json();
-    //   console.log(json.results);
-    const randomIndex = Math.floor(Math.random() * 20)
-    const randomMovie = json?.results?.[randomIndex]
+      const randomIndex = Math.floor(Math.random() * 20)
+      const randomMovie = json?.results?.[randomIndex]
       setMovies(randomMovie);
-      // console.log(randomMovie);
     } catch (error) {
       console.log("error occurred while fetching: ", error);
     }

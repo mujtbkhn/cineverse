@@ -20,20 +20,20 @@ const Browse = () => {
 
   const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
   return (
-      <div className="overflow-y-scroll scrollbar-hide">
-        <Header />
-        {showGptSearch ? (
-          <GPTSearch />
-          
-        ) : (
-          <>
-            {" "}
-            <MainContainer />
-            <SecondaryContainer />{" "}
-          </>
-        )}
-        <Footer />
-      </div>
+    <div className="overflow-y-scroll scrollbar-hide">
+      <Header />
+      {showGptSearch ? (
+        <GPTSearch />
+
+      ) : (
+        <>
+          {" "}
+          <MainContainer />
+          <SecondaryContainer />{" "}
+        </>
+      )}
+      <Footer />
+    </div>
   );
 };
 

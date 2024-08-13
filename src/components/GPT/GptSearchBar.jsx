@@ -71,7 +71,6 @@ const GptSearchBar = () => {
       </form>
     </div>
   );
-  //here we pass in langKey in array format because lang doesn't know what langKey is
 };
 
 export default GptSearchBar;

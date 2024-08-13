@@ -37,7 +37,6 @@ const WatchList = () => {
       <div className="flex flex-wrap justify-center gap-10 p-10">
         {watchList.map((movie) => (
           <div>
-            {/* <h1>{movie?.original_title}</h1> */}
             <MovieCard
               className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
               key={movie?.id}

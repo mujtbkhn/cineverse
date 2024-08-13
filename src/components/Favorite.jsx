@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { OPTIONS } from "../utils/constants";
 import MovieCard from "./MovieCard";
-import { Link } from "react-router-dom";
 import Header from "./MainContainer/Header";
 
 const Favorite = () => {
@@ -39,7 +38,6 @@ const Favorite = () => {
       <div className="flex flex-wrap justify-center gap-10 p-10">
         {favorite.map((movie) => (
           <div className="flex flex-col">
-            {/* <h1>{movie?.original_title}</h1> */}
             <MovieCard
               className="flex flex-wrap justify-center gap-10 p-1 m-2 md:p-5 md:m-5"
               key={movie.id}

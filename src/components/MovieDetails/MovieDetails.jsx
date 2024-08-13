@@ -1,11 +1,8 @@
 import React, {
-  useCallback,
   useEffect,
-  useMemo,
-  useRef,
   useState,
 } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IMG_CDN, IMG_CDN_ORG, OPTIONS } from "../../utils/constants";
 import MovieCard from "../MovieCard";
 import useDebounce from "../../hooks/useDebounce";
@@ -57,7 +54,6 @@ const MovieDetails = () => {
       setFav(isFavorite);
     } catch (error) {
       console.error("Error parsing favorites from localStorage:", error);
-      // Handle the error, e.g., set the 'fav' state to false
       setFav(false);
     }
     try {
@@ -70,7 +66,6 @@ const MovieDetails = () => {
       setWatchList(isWatchList);
     } catch (error) {
       console.error("Error parsing favorites from localStorage:", error);
-      // Handle the error, e.g., set the 'fav' state to false
       setWatchList(false);
     }
   }, [movieId]);
@@ -371,15 +366,6 @@ const MovieDetails = () => {
             <h3 className="text-yellow-500 md:text-xl">{actor}</h3>
           </div>
         </div>
-        {/* <h2 className="text-3xl ">Photos: </h2>
-        <div className="flex h-40 gap-2 overflow-x-scroll scrollbar-hide">
-          {images.map((image) => (
-            <img
-              className="flex rounded-md"
-              src={IMG_CDN_ORG + image?.file_path}
-            />
-          ))}
-        </div> */}
         <Photos />
         <h2 className="text-3xl ">Cast: </h2>
         <div className="flex flex-wrap justify-center gap-10 ">

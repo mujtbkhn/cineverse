@@ -5,7 +5,6 @@ import Favorite from "./Favorite";
 import { Suspense, lazy } from "react";
 import ExploreMovies from "./ExploreMovies";
 import Login from "./MainContainer/Login";
-import Test from "./Test";
 
 const MovieDetails = lazy(() => import("./MovieDetails/MovieDetails"));
 const Person = lazy(() => import("./Person"));
@@ -15,10 +14,6 @@ const Body = () => {
     {
       path: "/",
       element: <Login />,
-    },
-    {
-      path: "/test",
-      element: <Test />,
     },
     {
       path: "/browse",
