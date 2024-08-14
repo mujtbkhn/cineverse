@@ -1,7 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { IMG_CDN, IMG_CDN_ORG, OPTIONS } from "../../utils/constants";
 import MovieCard from "../MovieCard";
@@ -31,8 +28,131 @@ const MovieDetails = () => {
   const [actor, setActor] = useState("");
   const [rating, setRating] = useState("");
   const [rate, setRate] = useState(false);
+  const [error, setError] = useState(null);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
+
+  const fetchMovies = useCallback(async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
+        OPTIONS
+      );
+      const json = await data.json();
+      setMovieDetails(json);
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+      setError("Failed to fetch movie details");
+    }
+  }, [movieId]);
+
+  const fetchDetails = useCallback(async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}`,
+        OPTIONS
+      );
+      const json = await data.json();
+      setDetails(json);
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+      setError("Failed to fetch movie details");
+    }
+  }, [movieId]);
+
+  const fetchImages = useCallback(async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/images`,
+        OPTIONS
+      );
+      const json = await data.json();
+      setImages(json.backdrops);
+    } catch (error) {
+      console.error("Error fetching images:", error);
+      setError("Failed to fetch images");
+    }
+  }, [movieId]);
+
+  const fetchReviews = useCallback(async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/reviews`,
+        OPTIONS
+      );
+      const json = await data.json();
+      setReviews(json);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      setError("Failed to fetch reviews");
+    }
+  }, [movieId]);
+
+  const fetchSimilarMovies = useCallback(async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/similar`,
+        OPTIONS
+      );
+      const json = await data.json();
+      setSimilar(json.results);
+    } catch (error) {
+      console.error("Error fetching similar movies:", error);
+      setError("Failed to fetch similar movies");
+    }
+  }, [movieId]);
+
+  const fetchCast = useCallback(async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/credits`,
+        OPTIONS
+      );
+      const json = await data.json();
+      setCast(json.cast);
+    } catch (error) {
+      console.error("Error fetching cast:", error);
+      setError("Failed to fetch cast");
+    }
+  }, [movieId]);
+
+  const getMovieVideos = useCallback(async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/videos?language=en-US`,
+        OPTIONS
+      );
+      const json = await data.json();
+      const filteredData = json.results.filter(
+        (video) => video.type === "Trailer"
+      );
+      const trailer = filteredData.length ? filteredData[0] : json.results[0];
+      setTrailerVideo(trailer);
+    } catch (error) {
+      console.error("Error fetching movie videos:", error);
+      setError("Failed to fetch movie videos");
+    }
+  }, [movieId]);
+
+  const fetchDirector = useCallback(async () => {
+    try {
+      const data = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/credits`,
+        OPTIONS
+      );
+      const json = await data.json();
+      const director = json.crew.find((member) => member.job === "Director");
+      const actor = json.cast.slice(0, 3);
+      const actorName = actor.map((actor) => actor.name + " ");
+      setActor(actorName);
+      if (director) {
+        setDirector(director.name);
+      }
+    } catch (error) {
+      console.error("Error fetching director:", error);
+      setError("Failed to fetch director information");
+    }
+  }, [movieId]);
 
   useEffect(() => {
     fetchMovies();
@@ -43,7 +163,9 @@ const MovieDetails = () => {
     fetchCast();
     getMovieVideos();
     fetchDirector();
+  }, [movieId, fetchMovies, fetchDetails, fetchImages, fetchReviews, fetchSimilarMovies, fetchCast, getMovieVideos, fetchDirector]);
 
+  useEffect(() => {
     try {
       const favoritesFromStorage = JSON.parse(
         localStorage.getItem("favorites") || "[]"
@@ -52,11 +174,7 @@ const MovieDetails = () => {
         (movie) => movie.id === parseInt(movieId)
       );
       setFav(isFavorite);
-    } catch (error) {
-      console.error("Error parsing favorites from localStorage:", error);
-      setFav(false);
-    }
-    try {
+
       const watchListsFromStorage = JSON.parse(
         localStorage.getItem("WatchList") || "[]"
       );
@@ -65,7 +183,8 @@ const MovieDetails = () => {
       );
       setWatchList(isWatchList);
     } catch (error) {
-      console.error("Error parsing favorites from localStorage:", error);
+      console.error("Error parsing data from localStorage:", error);
+      setFav(false);
       setWatchList(false);
     }
   }, [movieId]);
@@ -85,122 +204,20 @@ const MovieDetails = () => {
         })
         .catch((err) => {
           console.error(err);
+          setError("Failed to fetch suggestions");
         });
     };
     fetchSuggestions();
   }, [debouncedSearchTerm]);
 
-  const fetchMovies = async () => {
-    const data = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
-      OPTIONS
-    );
-    const json = await data.json();
-    setMovieDetails(json);
-    // console.log(json);
-  };
-
-  const getMovieVideos = async () => {
-    const data = await fetch(
-      "https://api.themoviedb.org/3/movie/" +
-        movieId +
-        "/videos?language=en-US",
-      OPTIONS
-    );
-    const json = await data.json();
-    const filteredData = json.results.filter(
-      (video) => video.type === "Trailer"
-    );
-    const trailer = filteredData.length ? filteredData[0] : json.results[0];
-    // console.log(trailer);
-    setTrailerVideo(trailer);
-  };
-
-  const fetchDetails = async () => {
-    const data = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}`,
-      OPTIONS
-    );
-    const json = await data.json();
-    // console.log(json);
-    setDetails(json);
-  };
-
-  const fetchImages = async () => {
-    const data = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/images`,
-      OPTIONS
-    );
-    const json = await data.json();
-    // console.log(json);
-    setImages(json.backdrops);
-  };
-  const fetchReviews = async () => {
-    const data = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/reviews`,
-      OPTIONS
-    );
-    const json = await data.json();
-    // console.log(json);
-    setReviews(json);
-  };
-  const fetchSimilarMovies = async () => {
-    const data = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/similar`,
-      OPTIONS
-    );
-    const json = await data.json();
-    // console.log(json);
-    setSimilar(json.results);
-  };
-  const fetchCast = async () => {
-    const data = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/credits`,
-      OPTIONS
-    );
-    const json = await data.json();
-    // console.log(json.cast);
-    setCast(json.cast);
-  };
-  const fetchDirector = async () => {
-    const data = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/credits`,
-      OPTIONS
-    );
-    const json = await data.json();
-    // console.log(json);
-
-    const director = json.crew.find((member) => member.job === "Director");
-    const actor = json.cast.slice(0, 3);
-
-    const actorName = actor.map((actor) => actor.name + " ");
-    setActor(actorName);
-    // console.log(actorName);
-    if (director) {
-      setDirector(director.name);
-    }
-  };
-
-  const fetchPerson = async (personName) => {
-    const encodedPersonName = encodeURIComponent(personName); // Encode the person name
-    const data = await fetch(
-      `https://api.themoviedb.org/3/search/person?query=${encodedPersonName}&include_adult=false&language=en-US&page=1`,
-      OPTIONS
-    );
-    const json = await data.json();
-    const id = json.results[0]?.id;
-    setPersonId(id);
-  };
-
-  const handleRatingChanged = (newRating) => {
+  const handleRatingChanged = useCallback((newRating) => {
     console.log("New Rating:", newRating);
-
     setRating(newRating);
     addRating(newRating);
     setRate(true);
-  };
+  }, []);
 
-  const addToWatchList = () => {
+  const addToWatchList = useCallback(() => {
     const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/watchlist`;
     const options = {
       method: "POST",
@@ -225,17 +242,18 @@ const MovieDetails = () => {
       })
       .then((json) => {
         setWatchList(true);
-
         const existingWatchLists =
           JSON.parse(localStorage.getItem("WatchList")) || [];
         const updatedWatchLists = [...existingWatchLists, details];
         localStorage.setItem("WatchList", JSON.stringify(updatedWatchLists));
-        setWatchList(true);
       })
-      .catch((err) => console.error("error:" + err));
-  };
+      .catch((err) => {
+        console.error("error:" + err);
+        setError("Failed to add to watchlist");
+      });
+  }, [movieId, details]);
 
-  const addRating = (newRating) => {
+  const addRating = useCallback((newRating) => {
     const url = `https://api.themoviedb.org/3/movie/${movieId}/rating`;
     const options = {
       method: "POST",
@@ -250,22 +268,45 @@ const MovieDetails = () => {
     fetch(url, options)
       .then((res) => res.json())
       .then((json) => console.log(json))
-      .catch((err) => console.error("error:" + err));
-  };
+      .catch((err) => {
+        console.error("error:" + err);
+        setError("Failed to add rating");
+      });
+  }, [movieId]);
 
-  if (!movieDetails) return <div>Loading...</div>;
+  const fetchPerson = useCallback(async (personName) => {
+    try {
+      const encodedPersonName = encodeURIComponent(personName);
+      const data = await fetch(
+        `https://api.themoviedb.org/3/search/person?query=${encodedPersonName}&include_adult=false&language=en-US&page=1`,
+        OPTIONS
+      );
+      const json = await data.json();
+      const id = json.results[0]?.id;
+      setPersonId(id);
+    } catch (error) {
+      console.error("Error fetching person:", error);
+      setError("Failed to fetch person information");
+    }
+  }, []);
 
-  const formatMinutes = (minutes) => {
+  const formatMinutes = useCallback((minutes) => {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return `${hours}h ${remainingMinutes}m`;
-  };
+  }, []);
 
-  const formatDate = (releaseDate) => {
+  const formatDate = useCallback((releaseDate) => {
     const date = new Date(releaseDate);
     const options = { day: "numeric", month: "long", year: "numeric" };
     return date.toLocaleDateString("en-US", options);
-  };
+  }, []);
+
+  const formattedRuntime = useMemo(() => formatMinutes(details?.runtime), [details?.runtime, formatMinutes]);
+  const formattedReleaseDate = useMemo(() => formatDate(movieDetails?.release_date), [movieDetails?.release_date, formatDate]);
+
+  if (error) return <div>Error: {error}</div>;
+  if (!movieDetails) return <div>Loading...</div>;
 
   const imgUrl = IMG_CDN_ORG + movieDetails?.poster_path;
 
@@ -280,10 +321,8 @@ const MovieDetails = () => {
         </div>
         <div className="flex items-center justify-between mx-4 md:mx-10 md:gap-10 ">
           <div className="flex md:gap-6">
-            <h2 className="text-gray-300">
-              {formatDate(movieDetails?.release_date)}
-            </h2>
-            <h2 className="text-gray-300">{formatMinutes(details?.runtime)}</h2>
+            <h2 className="text-gray-300">{formattedReleaseDate}</h2>
+            <h2 className="text-gray-300">{formattedRuntime}</h2>
           </div>
           <div className="flex gap-10">
             <button className="flex gap-2 px-2 py-1 bg-gray-100 rounded-md border-1 bg-opacity-20">
@@ -340,7 +379,7 @@ const MovieDetails = () => {
               {details &&
                 details.genres.map((genre) => (
                   <button
-                    key={genre.id} // Make sure to provide a unique key
+                    key={genre.id} 
                     className="flex items-center justify-center h-10 px-5 text-gray-100 bg-white bg-opacity-40 rounded-2xl"
                   >
                     <h3>{genre.name}</h3>
