@@ -12,7 +12,7 @@ import { toggleGptSearchView } from "../../utils/gptSlice";
 import useDebounce from "../../hooks/useDebounce";
 import MovieCard from "../MovieCard";
 import useAuthentication from "../../hooks/useAuthentication";
-import useOutsideClick from "../../hooks/useOutSideClick";
+import useOutSideClick from "../../hooks/useOutSideClick";
 
 const Header = ({ enableAuthentication = true }) => {
   const [suggestions, setSuggestions] = useState([]);

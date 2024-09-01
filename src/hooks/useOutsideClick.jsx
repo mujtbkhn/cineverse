@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 // Custom hook to handle clicks outside of a specified ref
-const useOutsideClick = (ref, callback) => {
+const useOutSideClick = (ref, callback) => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
@@ -14,4 +14,4 @@ const useOutsideClick = (ref, callback) => {
   }, [ref, callback]);
 };
 
-export default useOutsideClick;
+export default useOutSideClick;
