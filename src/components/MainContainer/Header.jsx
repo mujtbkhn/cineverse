@@ -30,7 +30,7 @@ const Header = ({ enableAuthentication = true }) => {
     useAuthentication();
   }
 
-  useOutsideClick(suggestionsRef, () => {
+  useOutSideClick(suggestionsRef, () => {
     setSearchTerm("");
     setSuggestions([]);
   });
