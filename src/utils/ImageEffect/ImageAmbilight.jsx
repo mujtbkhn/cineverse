@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import "./VideoAmbilight.css";
+import "./ImageAmbilight.css";
 
 const ImageAmbilight = ({ imageSrc }) => {
   const imageRef = useRef(null);

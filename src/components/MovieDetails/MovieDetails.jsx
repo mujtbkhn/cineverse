@@ -5,253 +5,101 @@ import MovieCard from "../MovieCard";
 import useDebounce from "../../hooks/useDebounce";
 import Header from "../MainContainer/Header";
 import Rating from "../MainContainer/rating";
-import "react-toastify/dist/ReactToastify.css";
-import "./Test.css";
-import ImageAmbilight from "../../utils/ImageAmbilight";
+import "./MovieDetails.css";
+import ImageAmbilight from "../../utils/ImageEffect/ImageAmbilight";
 import Photos from "./Photos";
+import useAddToWatchlist from "../../hooks/useAddToWatchlist";
 
 const MovieDetails = () => {
+
   const { movieId } = useParams();
-  const [movieDetails, setMovieDetails] = useState(null);
-  const [details, setDetails] = useState(null);
-  const [images, setImages] = useState([]);
-  const [reviews, setReviews] = useState(null);
-  const [similar, setSimilar] = useState([]);
-  const [cast, setCast] = useState([]);
+  const [movieData, setMovieDate] = useState({
+    details: "",
+    images: [],
+    reviews: null,
+    similar: [],
+    cast: [],
+    trailerVideo: "",
+    director: "",
+    actor: "",
+    suggestions: []
+  })
+
+  const [userInteraction, setUserInteraction] = useState({
+    fav: false,
+    rating: "",
+    rate: false
+  })
+
   const [personId, setPersonId] = useState(null);
-  const [fav, setFav] = useState(false);
-  const [watchList, setWatchList] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [trailerVideo, setTrailerVideo] = useState("");
-  const [director, setDirector] = useState("");
-  const [actor, setActor] = useState("");
-  const [rating, setRating] = useState("");
-  const [rate, setRate] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("")
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 700);
+  const debouncedSearchTerm = useDebounce(searchTerm, 800)
 
-  const fetchMovies = useCallback(async () => {
+  const fetchMovieData = useCallback(async () => {
     try {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`,
-        OPTIONS
-      );
-      const json = await data.json();
-      setMovieDetails(json);
-    } catch (error) {
-      console.error("Error fetching movie details:", error);
-      setError("Failed to fetch movie details");
-    }
-  }, [movieId]);
+      const [details, images, reviews, similar, credits, videos, suggestions] = await Promise.all([
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}?language=en-US`, OPTIONS).then(res => res.json()),
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}/images`, OPTIONS).then(res => res.json()),
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}/reviews`, OPTIONS).then(res => res.json()),
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}/similar`, OPTIONS).then(res => res.json()),
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits`, OPTIONS).then(res => res.json()),
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}/videos?language=en-US`, OPTIONS).then(res => res.json()),
+        fetch(`https://api.themoviedb.org/3/search/multi?query=${debouncedSearchTerm}&include_adult=false&language=en-US&page=1`, OPTIONS).then(res => res.json())
+      ]);
 
-  const fetchDetails = useCallback(async () => {
-    try {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}`,
-        OPTIONS
-      );
-      const json = await data.json();
-      setDetails(json);
-    } catch (error) {
-      console.error("Error fetching movie details:", error);
-      setError("Failed to fetch movie details");
-    }
-  }, [movieId]);
+      const director = credits.crew.find(member => member.job === "Director")?.name || "";
+      const actor = credits.cast.slice(0, 3).map(actor => actor.name).join(", ");
+      const trailerVideo = videos.results.find(video => video.type === "Trailer") || videos.results[0] || "";
 
-  const fetchImages = useCallback(async () => {
-    try {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/images`,
-        OPTIONS
-      );
-      const json = await data.json();
-      setImages(json.backdrops);
+      setMovieDate({
+        details,
+        images: images.backdrops,
+        reviews,
+        similar: similar.results,
+        cast: credits.cast,
+        trailerVideo,
+        director,
+        actor,
+        suggestions
+      })
     } catch (error) {
-      console.error("Error fetching images:", error);
-      setError("Failed to fetch images");
+      console.error("Error fetching movie data:", error);
+      setError("Failed to fetch movie data");
     }
-  }, [movieId]);
+  }, [movieId])
 
-  const fetchReviews = useCallback(async () => {
-    try {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/reviews`,
-        OPTIONS
-      );
-      const json = await data.json();
-      setReviews(json);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
-      setError("Failed to fetch reviews");
-    }
-  }, [movieId]);
-
-  const fetchSimilarMovies = useCallback(async () => {
-    try {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/similar`,
-        OPTIONS
-      );
-      const json = await data.json();
-      setSimilar(json.results);
-    } catch (error) {
-      console.error("Error fetching similar movies:", error);
-      setError("Failed to fetch similar movies");
-    }
-  }, [movieId]);
-
-  const fetchCast = useCallback(async () => {
-    try {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/credits`,
-        OPTIONS
-      );
-      const json = await data.json();
-      setCast(json.cast);
-    } catch (error) {
-      console.error("Error fetching cast:", error);
-      setError("Failed to fetch cast");
-    }
-  }, [movieId]);
-
-  const getMovieVideos = useCallback(async () => {
-    try {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/videos?language=en-US`,
-        OPTIONS
-      );
-      const json = await data.json();
-      const filteredData = json.results.filter(
-        (video) => video.type === "Trailer"
-      );
-      const trailer = filteredData.length ? filteredData[0] : json.results[0];
-      setTrailerVideo(trailer);
-    } catch (error) {
-      console.error("Error fetching movie videos:", error);
-      setError("Failed to fetch movie videos");
-    }
-  }, [movieId]);
-
-  const fetchDirector = useCallback(async () => {
-    try {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieId}/credits`,
-        OPTIONS
-      );
-      const json = await data.json();
-      const director = json.crew.find((member) => member.job === "Director");
-      const actor = json.cast.slice(0, 3);
-      const actorName = actor.map((actor) => actor.name + " ");
-      setActor(actorName);
-      if (director) {
-        setDirector(director.name);
-      }
-    } catch (error) {
-      console.error("Error fetching director:", error);
-      setError("Failed to fetch director information");
-    }
-  }, [movieId]);
-
-  useEffect(() => {
-    fetchMovies();
-    fetchDetails();
-    fetchImages();
-    fetchReviews();
-    fetchSimilarMovies();
-    fetchCast();
-    getMovieVideos();
-    fetchDirector();
-  }, [movieId, fetchMovies, fetchDetails, fetchImages, fetchReviews, fetchSimilarMovies, fetchCast, getMovieVideos, fetchDirector]);
 
   useEffect(() => {
     try {
-      const favoritesFromStorage = JSON.parse(
-        localStorage.getItem("favorites") || "[]"
-      );
-      const isFavorite = favoritesFromStorage.some(
-        (movie) => movie.id === parseInt(movieId)
-      );
-      setFav(isFavorite);
+      const favoritesFromStorage = JSON.parse(localStorage.getItem("favorites") || "[]");
+      const watchListsFromStorage = JSON.parse(localStorage.getItem("WatchList") || "[]");
 
-      const watchListsFromStorage = JSON.parse(
-        localStorage.getItem("WatchList") || "[]"
-      );
-      const isWatchList = watchListsFromStorage.some(
-        (movie) => movie.id === parseInt(movieId)
-      );
-      setWatchList(isWatchList);
+      setUserInteraction(prev => ({
+        ...prev,
+        fav: favoritesFromStorage.some(movie => movie.id === parseInt(movieId)),
+        watchList: watchListsFromStorage.some(movie => movie.id === parseInt(movieId)),
+      }));
     } catch (error) {
       console.error("Error parsing data from localStorage:", error);
-      setFav(false);
-      setWatchList(false);
     }
   }, [movieId]);
 
-  useEffect(() => {
-    const fetchSuggestions = () => {
-      if (debouncedSearchTerm.trim() === "") {
-        setSuggestions([]);
-        return;
-      }
-
-      const url = `https://api.themoviedb.org/3/search/multi?query=${debouncedSearchTerm}&include_adult=false&language=en-US&page=1`;
-      fetch(url, OPTIONS)
-        .then((res) => res.json())
-        .then((json) => {
-          setSuggestions(json.results);
-        })
-        .catch((err) => {
-          console.error(err);
-          setError("Failed to fetch suggestions");
-        });
-    };
-    fetchSuggestions();
-  }, [debouncedSearchTerm]);
-
   const handleRatingChanged = useCallback((newRating) => {
-    console.log("New Rating:", newRating);
-    setRating(newRating);
+    setUserInteraction(prev => ({ ...prev, rating: newRating, rate: true }));
     addRating(newRating);
-    setRate(true);
   }, []);
+  
+  const { details, images, reviews, similar, cast, trailerVideo, director, actor } = movieData;
+  const { fav, rating, rate } = userInteraction;
 
-  const addToWatchList = useCallback(() => {
-    const url = `https://api.themoviedb.org/3/account/${process.env.REACT_APP_ACCOUNT_ID}/watchlist`;
-    const options = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
-      },
-      body: JSON.stringify({
-        media_type: "movie",
-        media_id: movieId,
-        watchlist: true,
-      }),
-    };
-
-    fetch(url, options)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to add to watchlist");
-        }
-        return res.json();
-      })
-      .then((json) => {
-        setWatchList(true);
-        const existingWatchLists =
-          JSON.parse(localStorage.getItem("WatchList")) || [];
-        const updatedWatchLists = [...existingWatchLists, details];
-        localStorage.setItem("WatchList", JSON.stringify(updatedWatchLists));
-      })
-      .catch((err) => {
-        console.error("error:" + err);
-        setError("Failed to add to watchlist");
-      });
-  }, [movieId, details]);
+  const { watchList, addToWatchList, checkWatchListStatus } = useAddToWatchlist(movieId, details)
+  
+  useEffect(() => {
+    fetchMovieData();
+    checkWatchListStatus();
+  }, [fetchMovieData, checkWatchListStatus]);
 
   const addRating = useCallback((newRating) => {
     const url = `https://api.themoviedb.org/3/movie/${movieId}/rating`;
@@ -266,9 +114,9 @@ const MovieDetails = () => {
     };
 
     fetch(url, options)
-      .then((res) => res.json())
-      .then((json) => console.log(json))
-      .catch((err) => {
+      .then(res => res.json())
+      .then(json => console.log(json))
+      .catch(err => {
         console.error("error:" + err);
         setError("Failed to add rating");
       });
@@ -290,25 +138,26 @@ const MovieDetails = () => {
     }
   }, []);
 
-  const formatMinutes = useCallback((minutes) => {
+  const formatMinutes = minutes => {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     return `${hours}h ${remainingMinutes}m`;
-  }, []);
+  };
 
-  const formatDate = useCallback((releaseDate) => {
+  const formatDate = releaseDate => {
     const date = new Date(releaseDate);
-    const options = { day: "numeric", month: "long", year: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  }, []);
+    return date.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" });
+  };
+
 
   const formattedRuntime = useMemo(() => formatMinutes(details?.runtime), [details?.runtime, formatMinutes]);
-  const formattedReleaseDate = useMemo(() => formatDate(movieDetails?.release_date), [movieDetails?.release_date, formatDate]);
+  const formattedReleaseDate = useMemo(() => formatDate(details?.release_date), [details?.release_date, formatDate]);
+
 
   if (error) return <div>Error: {error}</div>;
-  if (!movieDetails) return <div>Loading...</div>;
+  if (!movieData.details) return <div>Loading...</div>;
 
-  const imgUrl = IMG_CDN_ORG + movieDetails?.poster_path;
+  const imgUrl = IMG_CDN_ORG + details?.poster_path;
 
   return (
     <div className="w-full text-white font-roboto">
@@ -317,7 +166,7 @@ const MovieDetails = () => {
       </div>
       <div className="flex flex-col px-18 md:px-48">
         <div>
-          <h1 className="my-8 text-3xl md:text-6xl">{movieDetails?.title}</h1>
+          <h1 className="my-8 text-3xl md:text-6xl">{details?.title}</h1>
         </div>
         <div className="flex items-center justify-between mx-4 md:mx-10 md:gap-10 ">
           <div className="flex md:gap-6">
@@ -349,14 +198,14 @@ const MovieDetails = () => {
                 alt="star--v1"
               />
               <h2 className="my-auto">
-                {movieDetails?.vote_average.toFixed(1)}/10
+                {details?.vote_average.toFixed(1)}/10
               </h2>
             </div>
           </div>
         </div>
       </div>
       <div className="justify-center px-4 mt-10 md:px-44 md:flex-col md:flex">
-        <div className="flex flex-col gap-5 mx-auto md:gap-0 w-60 md:w-full md:flex-row">
+        <div className="flex flex-col gap-5 mx-auto md:gap-20 w-60 md:w-full md:flex-row">
           <ImageAmbilight imageSrc={imgUrl} crossorigin="anonymous" />
           <iframe
             className="w-full aspect-video"
@@ -371,7 +220,7 @@ const MovieDetails = () => {
         <div className="flex flex-col gap-10 my-10">
           <div className="flex flex-col gap-10 md:flex-row">
             <h2 className="mx-auto md:text-xl w-18">Overview</h2>
-            <h3 className="md:text-xl">{movieDetails?.overview}</h3>
+            <h3 className="md:text-xl">{details?.overview}</h3>
           </div>
           <div className="flex items-center gap-10">
             <h2 className="text-xl md:w-52">Genre</h2>
@@ -379,7 +228,7 @@ const MovieDetails = () => {
               {details &&
                 details.genres.map((genre) => (
                   <button
-                    key={genre.id} 
+                    key={genre.id}
                     className="flex items-center justify-center h-10 px-5 text-gray-100 bg-white bg-opacity-40 rounded-2xl"
                   >
                     <h3>{genre.name}</h3>
@@ -388,9 +237,7 @@ const MovieDetails = () => {
             </div>
 
             <button
-              onClick={() => {
-                addToWatchList();
-              }}
+              onClick={addToWatchList}
               className="flex justify-center px-6 py-2 m-4 mx-auto text-black bg-[#f5c518] rounded-md w-48"
             >
               {watchList ? "Added to watchList" : "Add to watchList"}
@@ -408,31 +255,30 @@ const MovieDetails = () => {
         <Photos />
         <h2 className="text-3xl ">Cast: </h2>
         <div className="flex flex-wrap justify-center gap-10 ">
-          {cast
-            ?.map((cast) => (
-              <div className="flex flex-col flex-wrap" key={cast.id}>
-                <Link to={personId ? `/person/${personId}` : "#"}>
-                  {cast.profile_path ? (
-                    <img
-                      onClick={() => fetchPerson(cast?.original_name)}
-                      className="object-cover w-20 rounded-md h-36 md:w-32"
-                      src={IMG_CDN + cast?.profile_path}
-                    />
-                  ) : null}
-                </Link>
-                <h1 className="font-bold">
-                  {window.innerWidth < 768
-                    ? cast?.original_name.slice(0, 10) + "..."
-                    : cast?.original_name.slice(0, 15) + "..."}
-                </h1>
-                <h2>
-                  {window.innerWidth < 768
-                    ? cast?.character.slice(0, 10) + "..."
-                    : cast?.character.slice(0, 15) + "..."}
-                </h2>
-              </div>
-            ))
-            .slice(0, 8)}
+          {cast?.map((castMember) => (
+            <div className="flex flex-col flex-wrap" key={castMember.id}>
+              <Link to={personId ? `/person/${personId}` : "#"}>
+                {castMember.profile_path ? (
+                  <img
+                    onClick={() => fetchPerson(castMember?.original_name)}
+                    className="object-cover w-20 rounded-md h-36 md:w-32"
+                    src={IMG_CDN + castMember?.profile_path}
+                    alt={castMember?.original_name}
+                  />
+                ) : null}
+              </Link>
+              <h1 className="font-bold">
+                {window.innerWidth < 768
+                  ? castMember?.original_name.slice(0, 10) + "..."
+                  : castMember?.original_name.slice(0, 15) + "..."}
+              </h1>
+              <h2>
+                {window.innerWidth < 768
+                  ? castMember?.character.slice(0, 10) + "..."
+                  : castMember?.character.slice(0, 15) + "..."}
+              </h2>
+            </div>
+          )).slice(0, 8)}
         </div>
         <h1 className="p-5 my-10 text-5xl ">More like this</h1>
         <div className="flex flex-wrap justify-center gap-10 md:flex-row md:justify-center ">

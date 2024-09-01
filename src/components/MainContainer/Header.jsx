@@ -12,12 +12,14 @@ import { toggleGptSearchView } from "../../utils/gptSlice";
 import useDebounce from "../../hooks/useDebounce";
 import MovieCard from "../MovieCard";
 import useAuthentication from "../../hooks/useAuthentication";
+import useOutsideClick from "../../hooks/useOutSideClick";
 
 const Header = ({ enableAuthentication = true }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   const searchText = useRef();
+  const suggestionsRef = useRef(null);
   const debouncedSearchTerm = useDebounce(searchTerm, 700);
 
   const user = useSelector((store) => store.user);
@@ -27,6 +29,11 @@ const Header = ({ enableAuthentication = true }) => {
   if (enableAuthentication) {
     useAuthentication();
   }
+
+  useOutsideClick(suggestionsRef, () => {
+    setSearchTerm("");
+    setSuggestions([]);
+  });
 
   useEffect(() => {
     const fetchSuggestions = () => {
@@ -50,7 +57,7 @@ const Header = ({ enableAuthentication = true }) => {
 
   const handleSignOut = () => {
     signOut(auth)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         navigate("/error");
       });
@@ -89,40 +96,41 @@ const Header = ({ enableAuthentication = true }) => {
                 placeholder="Search Movie or Person"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <ul className="absolute z-50 flex flex-wrap pl-10 mt-6 overflow-y-scroll text-white bg-black left-5 right-5 md:left-0 md:right-0 md:mr-0 md:w-1/2 top-18">
-                {suggestions.map((result) => {
-                  if (result.media_type === "movie" && result.poster_path) {
-                    return (
-                      <li key={result.id} className="text-white">
-                        <h1>{result.title}</h1>
-                        <MovieCard
-                          key={result.id}
-                          posterPath={result?.poster_path}
-                          id={result.id}
-                        />
-                      </li>
-                    );
-                  } else if (
-                    result.media_type === "person" &&
-                    result.profile_path
-                  ) {
-                    return (
-                      <li key={result.id} className="text-white">
-                        <Link to={`/person/${result.id}`}>
-                          <h1>{result.name}</h1>
-                          <img
-                            className="w-48"
-                            src={IMG_CDN_ORG + result.profile_path}
-                            alt={result.name}
+              {searchTerm && (
+
+                <ul ref={suggestionsRef} className="absolute z-50 flex flex-wrap justify-center  max-w-screen-xl mx-auto bg-black text-white shadow-lg rounded-lg top-20 left-0 right-0 overflow-y-auto max-h-[80vh] gap-2 pr-10">
+                  {suggestions.map((result) => {
+                    if (result.media_type === "movie" && result.poster_path) {
+                      return (
+                        <li key={result.id} className="w-full p-4 md:w-1/3 lg:w-1/4">
+                          <h1 className="mb-2 text-lg font-semibold truncate">{result.title}</h1>
+                          <MovieCard
+                            posterPath={result.poster_path}
+                            id={result.id}
+                            className="w-full rounded-md"
                           />
-                        </Link>
-                      </li>
-                    );
-                  } else {
-                    return null;
-                  }
-                })}
-              </ul>
+                        </li>
+                      );
+                    } else if (result.media_type === "person" && result.profile_path) {
+                      return (
+                        <li key={result.id} className="w-full p-4 md:w-1/3 lg:w-1/4">
+                          <Link to={`/person/${result.id}`} className="block">
+                            <h1 className="mb-2 text-lg font-semibold truncate">{result.name}</h1>
+                            <img
+                              className="w-full h-auto rounded-md"
+                              src={IMG_CDN_ORG + result.profile_path}
+                              alt={result.name}
+                            />
+                          </Link>
+                        </li>
+                      );
+                    } else {
+                      return null;
+                    }
+                  })}
+                </ul>
+              )}
+
             </div>
 
             <Link to={"/watchlist"}>
