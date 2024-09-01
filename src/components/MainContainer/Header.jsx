@@ -12,7 +12,7 @@ import { toggleGptSearchView } from "../../utils/gptSlice";
 import useDebounce from "../../hooks/useDebounce";
 import MovieCard from "../MovieCard";
 import useAuthentication from "../../hooks/useAuthentication";
-import useOutSideClick from "../../hooks/useOutSideClick";
+import useClick from "../../hooks/useClick";
 
 const Header = ({ enableAuthentication = true }) => {
   const [suggestions, setSuggestions] = useState([]);
@@ -30,10 +30,10 @@ const Header = ({ enableAuthentication = true }) => {
     useAuthentication();
   }
 
-  useOutSideClick(suggestionsRef, () => {
-    setSearchTerm("");
-    setSuggestions([]);
-  });
+  useClick(suggestionsRef, () => {
+    setSearchTerm("")
+    setSuggestions([])
+  })
 
   useEffect(() => {
     const fetchSuggestions = () => {

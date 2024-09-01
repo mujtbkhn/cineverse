@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEffect } from 'react';
 // Custom hook to handle clicks outside of a specified ref
 const useOutSideClick = (ref, callback) => {
