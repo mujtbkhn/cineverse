@@ -3,13 +3,13 @@ import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDyJNkZgYEjAUmIb4YDuBhpR3MDhfWH2Wo",
-  authDomain: "netflixgpt-3cc18.firebaseapp.com",
-  projectId: "netflixgpt-3cc18",
-  storageBucket: "netflixgpt-3cc18.appspot.com",
-  messagingSenderId: "858227287891",
-  appId: "1:858227287891:web:3d4c844e1162883a19a3a6",
-  measurementId: "G-Y4YT0F7SW0"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
